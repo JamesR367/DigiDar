@@ -14,8 +14,8 @@ Digidar is a physical calendar that has the ability to sync multiple personal ca
 - **Database:** PostgreSQL
 - **Calendar Sync:** RSS
 - **Parsing Hand Writing:** 
-	- **NLP:** Tesseract.js
-	- **OCR:**
+	- **NLP:** 
+	- **OCR:** Tesseract.js
 ## Contributors:
 - Alex Murray 
 - James Ramsey

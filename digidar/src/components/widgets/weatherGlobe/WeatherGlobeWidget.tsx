@@ -31,11 +31,11 @@ export default function WeatherGlobeWidget({
     const clouds = createFadingOverlaySphere(radius + 0.55, 0.55, undefined);
     clouds.mesh.name = "__owm_clouds";
     clouds.mesh.renderOrder = 1;
-    // scene.add(clouds.mesh); // hidden for testing
+    scene.add(clouds.mesh); 
 
     const precip = createFadingOverlaySphere(radius + 0.65, 1.0, new THREE.Color(0.3, 0.5, 1.0)); // blue tint, full opacity
     precip.mesh.name = "__owm_precip";
-    precip.mesh.renderOrder = 2; // render after clouds
+    precip.mesh.renderOrder = 2; 
     scene.add(precip.mesh);
 
     let stopped = false;
@@ -55,14 +55,14 @@ export default function WeatherGlobeWidget({
     };
 
     // kick off
-    // updateClouds(); // hidden for testing
+    updateClouds(); 
     updatePrecip();
 
     // slow rotation animation
     let raf = 0;
     const spin = () => {
-      // clouds.mesh.rotation.y += 0.0001; // hidden for testing
-      precip.mesh.rotation.y -= 0.00005; // opposite direction, slower for precipitation
+      clouds.mesh.rotation.y += 0.0001; 
+      precip.mesh.rotation.y -= 0.00005; 
       raf = requestAnimationFrame(spin);
     };
     spin();
@@ -134,7 +134,7 @@ function createFadingOverlaySphere(
   const matB = new THREE.MeshBasicMaterial({
     map: texB,
     transparent: true,
-    opacity: 0, // starts hidden
+    opacity: 0, 
     depthWrite: false,
     depthTest: true,
     color: color || 0xffffff,

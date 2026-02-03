@@ -7,7 +7,7 @@ type Props = { width?: number; height?: number };
 // ---- CONFIG ----
 const OWM_ZOOM = 2; // keep low (2–3) for performance
 const TILE_SIZE = 256;
-const UPDATE_MS = 60_000; // refresh every 60s
+const UPDATE_MS = 900_000; // refresh every 15 minutes
 const FADE_MS = 900;
 
 const OWM_KEY = import.meta.env.OPENWEATHER_KEY as string | undefined;
@@ -28,12 +28,14 @@ export default function WeatherGlobeWidget({
 
     const radius = globeRef.current.getGlobeRadius?.() ?? 100;
 
-    const clouds = createFadingOverlaySphere(radius + 0.55, 0.55);
+    const clouds = createFadingOverlaySphere(radius + 0.55, 0.55, undefined);
     clouds.mesh.name = "__owm_clouds";
-    scene.add(clouds.mesh);
+    clouds.mesh.renderOrder = 1;
+    scene.add(clouds.mesh); 
 
-    const precip = createFadingOverlaySphere(radius + 0.65, 0.7);
+    const precip = createFadingOverlaySphere(radius + 0.65, 1.0, new THREE.Color(0.3, 0.5, 1.0)); // blue tint, full opacity
     precip.mesh.name = "__owm_precip";
+    precip.mesh.renderOrder = 2; 
     scene.add(precip.mesh);
 
     let stopped = false;
@@ -53,14 +55,14 @@ export default function WeatherGlobeWidget({
     };
 
     // kick off
-    updateClouds();
+    updateClouds(); 
     updatePrecip();
 
     // slow rotation animation
     let raf = 0;
     const spin = () => {
-      clouds.mesh.rotation.y += 0.0007;
-      precip.mesh.rotation.y += 0.0007;
+      clouds.mesh.rotation.y += 0.0001; 
+      precip.mesh.rotation.y -= 0.00005; 
       raf = requestAnimationFrame(spin);
     };
     spin();
@@ -94,9 +96,6 @@ export default function WeatherGlobeWidget({
           atmosphereColor="#ffffff"
         />
       </div>
-      <div style={{ marginTop: 8, color: "#dbe7ff", fontFamily: "system-ui" }}>
-        Clouds + precipitation are global tile overlays (OpenWeather).
-      </div>
     </div>
   );
 }
@@ -116,6 +115,7 @@ type FadingOverlay = {
 function createFadingOverlaySphere(
   radius: number,
   opacity: number,
+  color?: THREE.Color,
 ): FadingOverlay {
   const geo = new THREE.SphereGeometry(radius, 64, 64);
 
@@ -127,13 +127,17 @@ function createFadingOverlaySphere(
     transparent: true,
     opacity,
     depthWrite: false,
+    depthTest: true,
+    color: color || 0xffffff,
   });
 
   const matB = new THREE.MeshBasicMaterial({
     map: texB,
     transparent: true,
-    opacity: 0, // starts hidden
+    opacity: 0, 
     depthWrite: false,
+    depthTest: true,
+    color: color || 0xffffff,
   });
 
   const meshA = new THREE.Mesh(geo, matA);

@@ -1,0 +1,40 @@
+.calendar-container{
+  background-color: #242424;
+  color: lightpink;
+  width: 75vw;
+  height: 85vh;
+}
+
+.calendar-header{
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  padding-top: 2%;
+  padding-left: 1.5%;
+  gap: 38%;
+}
+
+.calendar-header p{
+  display: flex;
+  flex-direction: row;
+  width: 20%;
+}
+
+.calendar-header-arrows{
+  gap: 10%;
+  display: flex;
+  flex-direction: row;
+}
+
+.calendar-header-arrows *{
+  aspect-ratio: 1/1;
+  width: 50%;
+  height: 50%;
+}
+
+.daysOfTheWeek{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding-left: ;
+}

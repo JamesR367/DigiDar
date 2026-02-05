@@ -1,15 +1,15 @@
 import { useState } from "react";
-import reactLogo from "../assets/react.svg";
-import viteLogo from "/vite.svg";
 import "../styles/App.css";
 import WeatherGlobeWidget from "./widgets/weatherGlobe/WeatherGlobeWidget";
+import Calendar from "./Calendar";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="App">
-      <WeatherGlobeWidget />
+    <div className="mainContainer">
+      <div className="weathGlobeWidget">{/* <WeatherGlobeWidget /> */}</div>
+      <div className="calendar">
+        <Calendar />
+      </div>
     </div>
   );
 }

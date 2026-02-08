@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Globe from "react-globe.gl";
 import * as THREE from "three";
 import "../../../styles/WeatherGlobe.css";

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "../styles/App.css";
 import WeatherGlobeWidget from "./widgets/weatherGlobe/WeatherGlobeWidget";
 import Calendar from "./Calendar";

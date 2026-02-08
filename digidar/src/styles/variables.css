@@ -1,0 +1,7 @@
+:root {
+  --primary-rgb: 255, 255, 255; 
+  --primary-color: rgb(var(--primary-rgb));
+  --border-rgb: 211, 211, 211;
+  --border-color: rgb(var(--border-rgb));
+  --background-color: #242424;
+}

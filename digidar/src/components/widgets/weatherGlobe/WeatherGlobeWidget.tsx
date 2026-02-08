@@ -14,7 +14,7 @@ const OWM_KEY = import.meta.env.OPENWEATHER_KEY as string | undefined;
 export default function WeatherGlobeWidget() {
   const globeRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState(400);
+  const [size, setSize] = useState(10);
 
   useEffect(() => {
     const updateSize = () => {

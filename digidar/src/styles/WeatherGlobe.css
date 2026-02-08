@@ -1,16 +1,10 @@
-:root {
-  --primary-rgb: 255, 255, 255; 
-  --primary-color: rgb(var(--primary-rgb));
-  --border-color: 211, 211, 211;
-  --primary-color-translucent: rgba(var(--primary-rgb), 0.21);
-}
-
 .globe-object{
   overflow: hidden; 
-  background-color: #242424;
-  border: solid rgb(var(--border-color)), 1px;
+  background-color: var(--background-color);
+  border: solid var(--border-color), 1px;
   border-radius: 16px;
   margin-left: 2%;
   width: 20vw; 
-  height: 24vw; 
+  height: 18vw; 
+  align-items: start;
 }

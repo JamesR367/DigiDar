@@ -1,22 +1,32 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Globe from "react-globe.gl";
 import * as THREE from "three";
-
-type Props = { width?: number; height?: number };
+import "../../../styles/WeatherGlobe.css";
 
 // ---- CONFIG ----
-const OWM_ZOOM = 2; // keep low (2–3) for performance
+const OWM_ZOOM = 2;
 const TILE_SIZE = 256;
-const UPDATE_MS = 900_000; // refresh every 15 minutes
+const UPDATE_MS = 900_000;
 const FADE_MS = 900;
 
 const OWM_KEY = import.meta.env.OPENWEATHER_KEY as string | undefined;
 
-export default function WeatherGlobeWidget({
-  width = 720,
-  height = 720,
-}: Props) {
+export default function WeatherGlobeWidget() {
   const globeRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState(400);
+
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        setSize(containerRef.current.offsetWidth);
+      }
+    };
+
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
 
   useEffect(() => {
     if (!globeRef.current) return;
@@ -25,17 +35,20 @@ export default function WeatherGlobeWidget({
     globeRef.current.pointOfView({ lat: 20, lng: -30, altitude: 2.2 }, 900);
 
     const scene: THREE.Scene = globeRef.current.scene();
-
     const radius = globeRef.current.getGlobeRadius?.() ?? 100;
 
     const clouds = createFadingOverlaySphere(radius + 0.55, 0.55, undefined);
     clouds.mesh.name = "__owm_clouds";
     clouds.mesh.renderOrder = 1;
-    scene.add(clouds.mesh); 
+    scene.add(clouds.mesh);
 
-    const precip = createFadingOverlaySphere(radius + 0.65, 1.0, new THREE.Color(0.3, 0.5, 1.0)); // blue tint, full opacity
+    const precip = createFadingOverlaySphere(
+      radius + 0.65,
+      1.0,
+      new THREE.Color(0.3, 0.5, 1.0),
+    );
     precip.mesh.name = "__owm_precip";
-    precip.mesh.renderOrder = 2; 
+    precip.mesh.renderOrder = 2;
     scene.add(precip.mesh);
 
     let stopped = false;
@@ -54,15 +67,13 @@ export default function WeatherGlobeWidget({
       tPrecip = window.setTimeout(updatePrecip, UPDATE_MS);
     };
 
-    // kick off
-    updateClouds(); 
+    updateClouds();
     updatePrecip();
 
-    // slow rotation animation
     let raf = 0;
     const spin = () => {
-      clouds.mesh.rotation.y += 0.0001; 
-      precip.mesh.rotation.y -= 0.00005; 
+      clouds.mesh.rotation.y += 0.0001;
+      precip.mesh.rotation.y -= 0.00005;
       raf = requestAnimationFrame(spin);
     };
     spin();
@@ -81,14 +92,12 @@ export default function WeatherGlobeWidget({
   }, []);
 
   return (
-    <div style={{ width }}>
-      <div
-        style={{ borderRadius: 16, overflow: "hidden", background: "#0b1220" }}
-      >
+    <div className="weather-globe-container">
+      <div className="globe-object" ref={containerRef}>
         <Globe
           ref={globeRef}
-          width={width}
-          height={height}
+          width={size}
+          height={size}
           backgroundColor="rgba(0,0,0,0)"
           globeImageUrl="https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
           bumpImageUrl="https://unpkg.com/three-globe/example/img/earth-topology.png"
@@ -99,6 +108,8 @@ export default function WeatherGlobeWidget({
     </div>
   );
 }
+
+// ... rest of your code stays the same
 
 type FadingOverlay = {
   mesh: THREE.Mesh;
@@ -134,7 +145,7 @@ function createFadingOverlaySphere(
   const matB = new THREE.MeshBasicMaterial({
     map: texB,
     transparent: true,
-    opacity: 0, 
+    opacity: 0,
     depthWrite: false,
     depthTest: true,
     color: color || 0xffffff,

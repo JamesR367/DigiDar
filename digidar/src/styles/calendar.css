@@ -1,40 +1,96 @@
+:root {
+  --primary-rgb: 255, 255, 255; 
+  --primary-color: rgb(var(--primary-rgb));
+  --border-color: 211, 211, 211;
+  --primary-color-translucent: rgba(var(--primary-rgb), 0.21);
+}
+
 .calendar-container{
   background-color: #242424;
-  color: lightpink;
-  width: 75vw;
+  border: solid rgb(var(--border-color)), 1px;
+  border-radius: 8px;
+  color: var(--primary-color);
+  width: 78.75vw;
   height: 85vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .calendar-header{
   display: flex;
   flex-direction: row;
-  justify-content: start;
-  padding-top: 2%;
-  padding-left: 1.5%;
-  gap: 38%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2% 1.5%;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
 .calendar-header p{
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.calendar-controls{
   display: flex;
   flex-direction: row;
-  width: 20%;
+  align-items: center;
+  gap: 1rem;
+}
+
+.calendar-header button{
+  padding: 0.5rem 1rem;
+	background: none;
+	color: inherit;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
 }
 
 .calendar-header-arrows{
-  gap: 10%;
   display: flex;
   flex-direction: row;
+  gap: 0.5rem;
 }
 
 .calendar-header-arrows *{
-  aspect-ratio: 1/1;
-  width: 50%;
-  height: 50%;
+  width: 24px;
+  height: 24px;
 }
 
 .daysOfTheWeek{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  padding-left: ;
+  padding: 0 1.5%;
+  flex-shrink: 0;
+  color: lightgray;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  padding: 1.5%;
+  flex: 1;
+  overflow: hidden;
+}
+
+.calendar-day {
+  display: flex;
+  align-items: flex-start;
+  justify-content: left;
+  padding: 0.5rem;
+  border: 1px solid rgba(var(--border-color), 0.333);
+  border-radius: 8px;
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+}
+
+.calendar-day.today {
+  background-color: var(--primary-color-translucent);
+  border: solid, rgba(var(--border-color));
 }

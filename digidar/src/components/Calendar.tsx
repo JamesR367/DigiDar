@@ -16,8 +16,21 @@ const Calendar = () => {
     firstDayOfActiveMonth.endOf("month").endOf("week"),
   )
     .splitBy({ day: 1 })
-    .map((day) => day.start);
+    .map((day) => day.start)
+    .filter((day): day is DateTime => day !== null);
   console.log(daysOfMonth);
+
+  const goToPreviousMonth = () => {
+    setFirstDayOfActiveMonth(firstDayOfActiveMonth.minus({ months: 1 }));
+  };
+
+  const goToNextMonth = () => {
+    setFirstDayOfActiveMonth(firstDayOfActiveMonth.plus({ months: 1 }));
+  };
+
+  const goToToday = () => {
+    setFirstDayOfActiveMonth(today.startOf("month"));
+  };
 
   return (
     <div className="calendar-container">
@@ -25,15 +38,35 @@ const Calendar = () => {
         <p>
           {firstDayOfActiveMonth.monthLong}, {firstDayOfActiveMonth.year}
         </p>
-        <p>Current Month</p>
-        <div className="calendar-header-arrows">
-          <LeftArrow color="white" />
-          <RightArrow color="white" />
+        <div className="calendar-controls">
+          <button onClick={goToToday}>Today</button>
+          <div className="calendar-header-arrows">
+            <LeftArrow
+              color="white"
+              onClick={goToPreviousMonth}
+              style={{ cursor: "pointer" }}
+            />
+            <RightArrow
+              color="white"
+              onClick={goToNextMonth}
+              style={{ cursor: "pointer" }}
+            />
+          </div>
         </div>
       </div>
       <div className="daysOfTheWeek">
         {weekdaysStartingSunday.map((weekDay, weekDayIndex) => (
           <div key={weekDayIndex}>{weekDay}</div>
+        ))}
+      </div>
+      <div className="calendar-grid">
+        {daysOfMonth.map((day, index) => (
+          <div
+            key={index}
+            className={`calendar-day ${day.month !== firstDayOfActiveMonth.month ? "other-month" : ""} ${day.hasSame(today, "day") ? "today" : ""}`}
+          >
+            {day.day}
+          </div>
         ))}
       </div>
     </div>

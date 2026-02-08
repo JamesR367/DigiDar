@@ -6,9 +6,11 @@ import Calendar from "./Calendar";
 function App() {
   return (
     <div className="mainContainer">
-      <div className="weathGlobeWidget">{/* <WeatherGlobeWidget /> */}</div>
       <div className="calendar">
         <Calendar />
+      </div>
+      <div className="weathGlobeWidget">
+        <WeatherGlobeWidget />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ function App() {
       <div className="calendar">
         <Calendar />
       </div>
-      <div className="weathGlobeWidget">
+      <div className="widgets">
         <WeatherGlobeWidget />
         <NewsSummary />
       </div>

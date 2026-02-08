@@ -8,9 +8,55 @@
   margin-top: 2%;
   width: 20vw; 
   height: 18vw; 
-  padding: 1.5rem;
   display: flex;
   flex-direction: column;
+}
+
+.NewsSummary-nav-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 1rem;
+}
+
+.direction-arrow-container {
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 1.0rem;
+  user-select: none;
+  background-color: rgba(var(--primary-rgb), 0);
+  transition: color 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.direction-arrow-container:hover {
+  background-color: rgba(var(--primary-rgb), .6);
+  color: var(--background-color);
+}
+
+.direction-arrow {
+  width: 24px;
+  height: 24px;
+  stroke: var(--primary-color);
+}
+
+.NewsSummary-content-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  animation: slideLeft 1s ease;
+}
+
+.NewsSummary-content-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  animation: slideRight 1s ease;
 }
 
 .NewsSummary-container h2 {
@@ -22,7 +68,6 @@
 }
 
 .NewsSummary-container h3 {
-  margin: 0 0 0.75rem 0;
   font-size: 1rem;
   line-height: 1.4;
   font-weight: 600;
@@ -36,24 +81,28 @@
   flex-grow: 1;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
 }
 
-.NewsSummary-container a {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  text-align: center;
-  transition: all 0.2s ease;
-  align-self: flex-start;
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-.NewsSummary-container a:hover {
-  background-color: rgba(var(--primary-rgb), 0.21);
-  border-color: var(--border-color);
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

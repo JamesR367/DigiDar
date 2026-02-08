@@ -17,7 +17,6 @@ const Calendar = () => {
     .splitBy({ day: 1 })
     .map((day) => day.start)
     .filter((day): day is DateTime => day !== null);
-  console.log(daysOfMonth);
 
   const goToPreviousMonth = () => {
     setFirstDayOfActiveMonth(firstDayOfActiveMonth.minus({ months: 1 }));

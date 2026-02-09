@@ -15,7 +15,6 @@ const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(today);
 
   const weekdays = Info.weekdays("short", { locale: "en-US" });
-  const weekdaysStartingSunday = [weekdays[6], ...weekdays.slice(0, 6)];
   const daysOfMonth = Interval.fromDateTimes(
     firstDayOfActiveMonth.startOf("week"),
     firstDayOfActiveMonth.endOf("month").endOf("week"),
@@ -23,7 +22,6 @@ const Calendar = () => {
     .splitBy({ day: 1 })
     .map((day) => day.start)
     .filter((day): day is DateTime => day !== null);
-  console.log(daysOfMonth);
 
   const goToPreviousMonth = () => {
     setFirstDayOfActiveMonth(firstDayOfActiveMonth.minus({ months: 1 }));
@@ -79,7 +77,7 @@ const Calendar = () => {
         </div>
       </div>
       <div className="daysOfTheWeek">
-        {weekdaysStartingSunday.map((weekDay, weekDayIndex) => (
+        {weekdays.map((weekDay, weekDayIndex) => (
           <div key={weekDayIndex}>{weekDay}</div>
         ))}
       </div>

@@ -3,12 +3,17 @@ import { useState } from "react";
 import "../styles/calendar.css";
 import LeftArrow from "../assets/leftArrow.svg?react";
 import RightArrow from "../assets/rightArrow.svg?react";
+import DayView from "./Day";
 
 const Calendar = () => {
   const today = DateTime.local();
   const [firstDayOfActiveMonth, setFirstDayOfActiveMonth] = useState(
     today.startOf("month"),
   );
+  
+  const [view, setView] = useState<"month" | "day">("month");
+  const [selectedDate, setSelectedDate] = useState(today);
+
   const weekdays = Info.weekdays("short", { locale: "en-US" });
   const weekdaysStartingSunday = [weekdays[6], ...weekdays.slice(0, 6)];
   const daysOfMonth = Interval.fromDateTimes(
@@ -31,6 +36,25 @@ const Calendar = () => {
   const goToToday = () => {
     setFirstDayOfActiveMonth(today.startOf("month"));
   };
+
+  const handleDayClick = (day: DateTime) => {
+    setSelectedDate(day);
+    setView("day");
+  };
+
+  if (view == "day"){
+    return (
+      <div className="calendar-container">
+        <div className="calendar-header">
+          <button className="back-button" onClick={() => setView("month")}>
+            ← Back to Month
+          </button>
+          <p>{selectedDate.toFormat("cccc, LLLL dd")}</p>
+        </div>
+        <DayView selectedDate={selectedDate} />
+      </div>
+    );
+  }
 
   return (
     <div className="calendar-container">
@@ -63,7 +87,10 @@ const Calendar = () => {
         {daysOfMonth.map((day, index) => (
           <div
             key={index}
-            className={`calendar-day ${day.month !== firstDayOfActiveMonth.month ? "other-month" : ""} ${day.hasSame(today, "day") ? "today" : ""}`}
+
+            onClick={() => handleDayClick(day)}
+
+            className={`calendar-day ${day.month !== firstDayOfActiveMonth.month ? "other-month" : ""} ${day.hasSame(today, "day") ? "today" : ""} ${day.hasSame(selectedDate, "day") ? "selected" : ""}`} style={{cursor: "pointer"}}
           >
             {day.day}
           </div>

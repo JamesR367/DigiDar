@@ -1,0 +1,65 @@
+.day-view-outer {
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.column-title {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #646cff;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.hour-list {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.hour-block {
+  display: flex;
+  flex: 1;
+  background: #242424;
+  border: 1px solid #333;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.1s;
+}
+
+.hour-block:hover {
+  border-color: #646cff;
+  background: #2a2a2a;
+}
+
+.hour-label {
+  background: #1a1a1a;
+  color: #888;
+  font-size: 0.7rem;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #333;
+  text-transform: uppercase;
+}
+
+.event-input-zone {
+  flex-grow: 1;
+  padding: 4px;
+}

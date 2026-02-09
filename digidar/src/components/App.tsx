@@ -1,6 +1,7 @@
 import "../styles/App.css";
 import WeatherGlobeWidget from "./widgets/weatherGlobe/WeatherGlobeWidget";
 import Calendar from "./Calendar";
+import NewsSummary from "./widgets/NewsSummary";
 
 function App() {
   return (
@@ -8,9 +9,11 @@ function App() {
       <div className="calendar">
         <Calendar />
       </div>
-      <div className="weathGlobeWidget">
+      <div className="widgets">
         <WeatherGlobeWidget />
+        <NewsSummary />
       </div>
+      <div></div>
     </div>
   );
 }

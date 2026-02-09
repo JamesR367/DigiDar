@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import "../../styles/NewsSummary.css";
 import LeftArrow from "../../assets/leftArrow.svg?react";
 import RightArrow from "../../assets/rightArrow.svg?react";
-import { any } from "three/tsl";
 
 interface NewsItem {
   title: string;

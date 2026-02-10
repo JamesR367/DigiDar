@@ -3,16 +3,17 @@ import { useState } from "react";
 import "../styles/calendar.css";
 import LeftArrow from "../assets/leftArrow.svg?react";
 import RightArrow from "../assets/rightArrow.svg?react";
-import DayView from "./Day";
 
-const Calendar = () => {
+interface CalendarProps {
+  setSelectedDate: (selectedDate: DateTime) => void;
+  setView: (view: "month" | "day") => void;
+}
+
+function Calendar({ setSelectedDate, setView }: CalendarProps) {
   const today = DateTime.local();
   const [firstDayOfActiveMonth, setFirstDayOfActiveMonth] = useState(
     today.startOf("month"),
   );
-  
-  const [view, setView] = useState<"month" | "day">("month");
-  const [selectedDate, setSelectedDate] = useState(today);
 
   const weekdays = Info.weekdays("short", { locale: "en-US" });
   const daysOfMonth = Interval.fromDateTimes(
@@ -39,20 +40,6 @@ const Calendar = () => {
     setSelectedDate(day);
     setView("day");
   };
-
-  if (view == "day"){
-    return (
-      <div className="calendar-container">
-        <div className="calendar-header">
-          <button className="back-button" onClick={() => setView("month")}>
-            ← Back to Month
-          </button>
-          <p>{selectedDate.toFormat("cccc, LLLL dd")}</p>
-        </div>
-        <DayView selectedDate={selectedDate} />
-      </div>
-    );
-  }
 
   return (
     <div className="calendar-container">
@@ -85,10 +72,9 @@ const Calendar = () => {
         {daysOfMonth.map((day, index) => (
           <div
             key={index}
-
             onClick={() => handleDayClick(day)}
-
-            className={`calendar-day ${day.month !== firstDayOfActiveMonth.month ? "other-month" : ""} ${day.hasSame(today, "day") ? "today" : ""} ${day.hasSame(selectedDate, "day") ? "selected" : ""}`} style={{cursor: "pointer"}}
+            className={`calendar-day ${day.month !== firstDayOfActiveMonth.month ? "other-month" : ""} ${day.hasSame(today, "day") ? "today" : ""}`}
+            style={{ cursor: "pointer" }}
           >
             {day.day}
           </div>
@@ -96,5 +82,6 @@ const Calendar = () => {
       </div>
     </div>
   );
-};
+}
+
 export default Calendar;

@@ -1,13 +1,35 @@
-.day-view-outer {
-  height: 600px;
+.day-view-container {
+  background-color: var(--background-color);
+  border: solid var(--border-color), 1px;
+  border-radius: 8px;
+  color: var(--primary-color);
+  width: 78.75vw;
+  height: 85vh;
   display: flex;
   flex-direction: column;
 }
 
+.day-header{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 1%;
+  margin-left: 1%;
+  margin-top: 1%;
+}
+
+.back-button{
+  width: 20px;
+  height: 20px;
+  stroke: var(--primary-color);
+  cursor: pointer;
+}
+
 .day-columns {
+  margin-top: 2%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: inherit;
   flex-grow: 1;
 }
 
@@ -17,12 +39,13 @@
   height: 100%;
 }
 
-.column-title {
-  text-align: center;
-  font-size: 0.9rem;
-  color: #646cff;
-  margin-bottom: 8px;
-  font-weight: bold;
+.hour-slot{
+  display: flex;
+  flex-direction: row;
+  width: 98%;
+  height: 8%;
+  border-bottom: 1px solid var(--border-color);
+  margin-left: .75%;
 }
 
 .hour-list {
@@ -31,35 +54,25 @@
   flex-grow: 1;
 }
 
-.hour-block {
-  display: flex;
-  flex: 1;
-  background: #242424;
-  border: 1px solid #333;
-  margin-bottom: 4px;
-  border-radius: 4px;
-  overflow: hidden;
-  transition: transform 0.1s;
+.event-area.even-hour{
+  height: 100%;
+  width: 100%;
+  background-color: rgba(var(--primary-rgb),.25);
 }
 
-.hour-block:hover {
-  border-color: #646cff;
-  background: #2a2a2a;
+.event-area.odd-hour{
+  height: 100%;
+  width: 100%;
+  background-color: rgba(var(--secondary-rgb),.25);
 }
 
-.hour-label {
-  background: #1a1a1a;
-  color: #888;
-  font-size: 0.7rem;
-  width: 50px;
+.time-label {
+  color: var(--primary-color);
+  font-size: 1rem;
+  width: 11%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid #333;
+  border-right: 1px solid var(--border-color);
   text-transform: uppercase;
-}
-
-.event-input-zone {
-  flex-grow: 1;
-  padding: 4px;
 }

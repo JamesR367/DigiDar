@@ -9,7 +9,7 @@ const TILE_SIZE = 256;
 const UPDATE_MS = 900_000;
 const FADE_MS = 900;
 
-const OWM_KEY = import.meta.env.OPENWEATHER_KEY as string | undefined;
+const OWM_KEY = import.meta.env.VITE_OPENWEATHER_KEY as string | undefined;
 
 export default function WeatherGlobeWidget() {
   const globeRef = useRef<any>(null);

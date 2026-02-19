@@ -4,9 +4,10 @@
   border-radius: 8px;
   color: var(--primary-color);
   width: 78.75vw;
-  height: 85vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  margin: 1vh 0.5vw;
 }
 
 .day-header{

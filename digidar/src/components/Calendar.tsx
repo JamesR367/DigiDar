@@ -4,11 +4,17 @@ import "../styles/calendar.css";
 import LeftArrow from "../assets/leftArrow.svg?react";
 import RightArrow from "../assets/rightArrow.svg?react";
 
-const Calendar = () => {
+interface CalendarProps {
+  setSelectedDate: (selectedDate: DateTime) => void;
+  setView: (view: "month" | "day") => void;
+}
+
+function Calendar({ setSelectedDate, setView }: CalendarProps) {
   const today = DateTime.local();
   const [firstDayOfActiveMonth, setFirstDayOfActiveMonth] = useState(
     today.startOf("month"),
   );
+
   const weekdays = Info.weekdays("short", { locale: "en-US" });
   const daysOfMonth = Interval.fromDateTimes(
     firstDayOfActiveMonth.startOf("week"),
@@ -28,6 +34,11 @@ const Calendar = () => {
 
   const goToToday = () => {
     setFirstDayOfActiveMonth(today.startOf("month"));
+  };
+
+  const handleDayClick = (day: DateTime) => {
+    setSelectedDate(day);
+    setView("day");
   };
 
   return (
@@ -61,7 +72,9 @@ const Calendar = () => {
         {daysOfMonth.map((day, index) => (
           <div
             key={index}
+            onClick={() => handleDayClick(day)}
             className={`calendar-day ${day.month !== firstDayOfActiveMonth.month ? "other-month" : ""} ${day.hasSame(today, "day") ? "today" : ""}`}
+            style={{ cursor: "pointer" }}
           >
             {day.day}
           </div>
@@ -69,5 +82,6 @@ const Calendar = () => {
       </div>
     </div>
   );
-};
+}
+
 export default Calendar;

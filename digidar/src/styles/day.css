@@ -1,0 +1,78 @@
+.day-view-container {
+  background-color: var(--background-color);
+  border: solid var(--border-color), 1px;
+  border-radius: 8px;
+  color: var(--primary-color);
+  width: 78.75vw;
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-header{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 1%;
+  margin-left: 1%;
+  margin-top: 1%;
+}
+
+.back-button{
+  width: 20px;
+  height: 20px;
+  stroke: var(--primary-color);
+  cursor: pointer;
+}
+
+.day-columns {
+  margin-top: 2%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: inherit;
+  flex-grow: 1;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.hour-slot{
+  display: flex;
+  flex-direction: row;
+  width: 98%;
+  height: 8%;
+  border-bottom: 1px solid var(--border-color);
+  margin-left: .75%;
+}
+
+.hour-list {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.event-area.even-hour{
+  height: 100%;
+  width: 100%;
+  background-color: rgba(var(--primary-rgb),.25);
+}
+
+.event-area.odd-hour{
+  height: 100%;
+  width: 100%;
+  background-color: rgba(var(--secondary-rgb),.25);
+}
+
+.time-label {
+  color: var(--primary-color);
+  font-size: 1rem;
+  width: 11%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--border-color);
+  text-transform: uppercase;
+}

@@ -1,18 +1,19 @@
-version: "3.8"
-
 services:
   digidar:
     build:
-      context: ./digidar # adjust to your project folder name
+      context: ./digidar
       dockerfile: ../Dockerfile
     ports:
       - "5173:5173"
     volumes:
       - ./digidar:/app
       - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - .env
     container_name: digidar-dev
+    depends_on:
+      db:
+        condition: service_healthy
     develop:
       watch:
         - action: sync
@@ -25,3 +26,47 @@ services:
           target: /app/public
           ignore:
             - node_modules
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    container_name: digidar-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app
+          ignore:
+            - __pycache__/
+            - "*.pyc"
+
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3307:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:

@@ -23,6 +23,6 @@ Digidar is a physical calendar that has the ability to sync multiple personal ca
 
 ## Contributors:
 
-- Alex Murray[https://github.com/alexsmurray]
-- James Ramsey[https://github.com/JamesR367]
-- Christopher Ortega[https://github.com/c-ortega]
+- (Alex Murray)[https://github.com/alexsmurray]
+- (James Ramsey)[https://github.com/JamesR367]
+- (Christopher Ortega)[https://github.com/c-ortega]

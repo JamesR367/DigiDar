@@ -41,6 +41,10 @@
 	outline: inherit;
 }
 
+.calendar-header button:hover{
+  opacity: .6;
+}
+
 .calendar-header-arrows{
   display: flex;
   flex-direction: row;
@@ -51,6 +55,10 @@
   width: 24px;
   height: 24px;
   stroke: var(--primary-color);
+}
+
+.calendar-header-arrows *:hover{
+  opacity: .6;
 }
 
 .daysOfTheWeek{

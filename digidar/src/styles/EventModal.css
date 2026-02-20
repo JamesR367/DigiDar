@@ -1,0 +1,77 @@
+.modalBackground {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(var(--primary-rgb),.6);
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContainer {
+  width: 60%;
+  height: 70%;
+  border-radius: 12px;
+  background-color: var(--background-color);
+  color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+}
+
+.title {
+  display: inline-block;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.back-button-container{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.back-button{
+  width: 20px;
+  height: 20px;
+  stroke: var(--primary-color);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.back-button:hover{
+  opacity: .6;
+  color: var(--back-button-hover-color);
+}
+
+.body {
+  flex: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
+.footer {
+  flex: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.create-button {
+  width: 18%;
+  height: 40%;
+  margin: 10px;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: solid var(--primary-color), 1px;
+  border-radius: 8px;
+  outline: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.create-button:hover{
+    opacity: .6;
+}

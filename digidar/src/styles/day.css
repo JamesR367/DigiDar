@@ -18,11 +18,38 @@
   margin-top: 1%;
 }
 
+.day-header-right-side{
+  display: flex;
+  flex-direction: row;
+  gap: 19px;
+}
+
+.event-button{
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: solid var(--primary-color), 1px;
+  border-radius: 8px;
+  outline: none;
+  width: 60%;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.event-button:hover{
+  opacity: .6;
+}
+
 .back-button{
   width: 20px;
   height: 20px;
   stroke: var(--primary-color);
   cursor: pointer;
+  flex-shrink: 0;
+}
+
+.back-button:hover{
+  opacity: .6;
+  color: var(--back-button-hover-color);
 }
 
 .day-columns {

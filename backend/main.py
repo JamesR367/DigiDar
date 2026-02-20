@@ -8,6 +8,10 @@ from sqlalchemy.orm import Session
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
+# Objects for each table in the database
+class UserBase(BaseModel):
+    username: str
+
 class EventBase(BaseModel):
     title: str
     start_datetime: str
@@ -23,9 +27,6 @@ class EventRecurrenceBase(BaseModel):
     end_date: str | None = None
     count: int | None = None
 
-class UserBase(BaseModel):
-    username: str
-
 def get_db():
     db = SessionLocal()
     try:
@@ -33,6 +34,7 @@ def get_db():
     finally:
         db.close()
 
+#shortcut
 db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.post("/users/", status_code=status.HTTP_201_CREATED)

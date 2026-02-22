@@ -13,14 +13,19 @@ function App() {
 
   if (view == "day") {
     return (
+      //This allows the selectedDate state to go through different components without having to prop drill
       <dateContext.Provider value={selectedDate}>
-        <DayView setView={setView} />
+        <div className="main-container">
+          <div className="large-component">
+            <DayView setView={setView} />
+          </div>
+        </div>
       </dateContext.Provider>
     );
   } else {
     return (
-      <div className="mainContainer">
-        <div className="calendar">
+      <div className="main-container">
+        <div className="large-component">
           <Calendar setSelectedDate={setSelectedDate} setView={setView} />
         </div>
         <div className="widgets">

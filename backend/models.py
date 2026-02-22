@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String, DateTime, Date, Enum, JSON, ForeignKey
 from database import Base
 
+# Creates database tables if they aren't already created
 class User(Base):
     __tablename__ = 'users'
 
@@ -11,7 +12,7 @@ class Event(Base):
     __tablename__ = 'events'
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    title = Column(String(500), nullable=False)
+    title = Column(String(50), nullable=False)
     start_datetime = Column(DateTime, nullable=False)
     end_datetime = Column(DateTime, nullable=False)
     all_day = Column(Boolean, default=False)

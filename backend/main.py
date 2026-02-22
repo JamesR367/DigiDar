@@ -10,20 +10,22 @@ from datetime import datetime
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
+#Allows specific ip addresses to access the api
 origins = [
     "http://localhost:3000", 
     "http://localhost:5173",
 ]
 
+#Gives the frontend permission to do specific actions
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+    allow_methods=["GET", "POST", "DELETE", "PATCH"],
     allow_headers=["*"],
 )
 
-# Objects for each table in the database
+#Objects for each table in the database
 class UserBase(BaseModel):
     username: str
 
@@ -49,9 +51,9 @@ def get_db():
     finally:
         db.close()
 
-#shortcut
 db_dependency = Annotated[Session, Depends(get_db)]
 
+#These are the actions the frontend can do 
 @app.post("/users/", status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserBase, db: db_dependency):
     db_user = models.User(**user.model_dump())

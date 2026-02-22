@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-.mainContainer{
+.main-container{
   display: flex;
   justify-content: left;
   align-items: flex-start;  
@@ -13,7 +13,7 @@
   background-color: rgb(10, 10, 10);
 }
 
-.calendar{
+.large-component{
   padding-left: .5vw;
   padding-bottom: 1vh;
 }

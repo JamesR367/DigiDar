@@ -55,6 +55,7 @@
   width: 24px;
   height: 24px;
   stroke: var(--primary-color);
+  cursor: pointer;
 }
 
 .calendar-header-arrows *:hover{

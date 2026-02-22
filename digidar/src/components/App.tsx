@@ -2,7 +2,7 @@ import { useState } from "react";
 import { DateTime } from "luxon";
 import "../styles/App.css";
 import WeatherGlobeWidget from "./widgets/WeatherGlobeWidget";
-import Calendar from "./Calendar";
+import Calendar from "./Month";
 import NewsSummary from "./widgets/NewsSummary";
 import DayView from "./Day";
 import { dateContext } from "./Context";

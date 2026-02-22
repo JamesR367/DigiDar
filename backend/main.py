@@ -4,9 +4,24 @@ from typing import Annotated
 import models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime 
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
+
+origins = [
+    "http://localhost:3000", 
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+    allow_headers=["*"],
+)
 
 # Objects for each table in the database
 class UserBase(BaseModel):
@@ -14,8 +29,8 @@ class UserBase(BaseModel):
 
 class EventBase(BaseModel):
     title: str
-    start_datetime: str
-    end_datetime: str
+    start_datetime: datetime
+    end_datetime: datetime
     all_day: bool
     user_id: int
 

@@ -40,8 +40,8 @@
 }
 
 .back-button{
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   stroke: var(--primary-color);
   cursor: pointer;
   flex-shrink: 0;

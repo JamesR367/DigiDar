@@ -1,16 +1,16 @@
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import "../styles/day.css";
 import Cancel from "../assets/cancel.svg?react";
 import EventModal from "./widgets/EventModal";
-import { div } from "three/tsl";
+import { dateContext } from "./Context";
 
 interface DayViewProps {
-  selectedDate: DateTime;
   setView: (view: "month" | "day") => void;
 }
 
-function DayView({ selectedDate, setView }: DayViewProps) {
+function DayView({ setView }: DayViewProps) {
+  const selectedDate = useContext(dateContext)!;
   const amHours = Array.from({ length: 12 }, (_, i) => i);
   const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,7 +46,7 @@ function DayView({ selectedDate, setView }: DayViewProps) {
                 setModalOpen(true);
               }}
             >
-              Create Event
+              Add Event
             </button>
             <Cancel className="back-button" onClick={() => handleDayClick()} />
           </div>

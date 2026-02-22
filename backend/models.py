@@ -4,13 +4,13 @@ from database import Base
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String(50), unique=True)
 
 class Event(Base):
     __tablename__ = 'events'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     title = Column(String(500), nullable=False)
     start_datetime = Column(DateTime, nullable=False)
     end_datetime = Column(DateTime, nullable=False)

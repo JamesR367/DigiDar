@@ -1,77 +1,162 @@
-.modalBackground {
+.modal-background {
   width: 100vw;
   height: 100vh;
-  background-color: rgba(var(--primary-rgb),.6);
+  background-color: rgba(var(--primary-rgb), 0.6);
   position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.modalContainer {
-  width: 60%;
-  height: 70%;
+.modal-container {
+  width: 55%;
+  height: 65%;
   border-radius: 12px;
   background-color: var(--background-color);
   color: var(--primary-color);
   display: flex;
   flex-direction: column;
-  padding: 25px;
+  padding: 30px 35px;
 }
 
-.title {
-  display: inline-block;
-  text-align: center;
-  margin-top: 10px;
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-.back-button-container{
-    display: flex;
-    justify-content: flex-end;
+.modal-title {
+  font-size: 160%;
 }
 
-.back-button{
-  width: 20px;
-  height: 20px;
+.back-button {
+  width: 22px;
+  height: 22px;
   stroke: var(--primary-color);
   cursor: pointer;
   flex-shrink: 0;
 }
 
-.back-button:hover{
-  opacity: .6;
-  color: var(--back-button-hover-color);
+.body {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10%;
+  padding: 1%;
 }
 
-.body {
-  flex: 50%;
+.time-pickers {
+  flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 5vh;
+  padding-left: 1%;
+}
+
+.time-picker-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.time-picker-group label {
+  font-size: 90%;
+  font-weight: bold;
+}
+
+.time-picker-group.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.all-day-checkbox {
+  display: flex;
   align-items: center;
-  font-size: 1.7rem;
-  text-align: center;
+  gap: 10px;
+}
+
+.all-day-checkbox label {
+  margin-left: 0;
+  font-size: 90%;
+  font-weight: bold;
+}
+
+.all-day-checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.all-day-checkbox input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5vh;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.input-group label {
+  font-size: 90%;
+  font-weight: bold;
+}
+
+.input-group select,
+.input-group input[type="text"] {
+  font-size: 100%;
+  padding: 3% 4%;
+  border-radius: 8px;
+  border: 1px solid var(--primary-color);
+  background-color: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  outline: none;
+  margin-top: 1vh;
+}
+
+.input-group select option {
+  background-color: var(--background-color);
+  color: var(--primary-color);
 }
 
 .footer {
-  flex: 20%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 7%;
 }
 
 .create-button {
-  width: 18%;
-  height: 40%;
-  margin: 10px;
+  width: 30%;
+  height: 6.5vh;
   background-color: var(--primary-color);
   color: var(--background-color);
-  border: solid var(--primary-color), 1px;
+  border: 1px solid var(--primary-color);
   border-radius: 8px;
   outline: none;
-  font-size: 20px;
+  font-size: 100%;
+  font-weight: bold;
   cursor: pointer;
+
 }
 
-.create-button:hover{
-    opacity: .6;
+.create-button:hover {
+  opacity: 0.6;
 }

@@ -5,7 +5,7 @@ import WeatherGlobeWidget from "./widgets/WeatherGlobeWidget";
 import Calendar from "./Month";
 import NewsSummary from "./widgets/NewsSummary";
 import DayView from "./Day";
-import { dateContext } from "./Context";
+import { dateContext } from "../utils/Context";
 import TopBar from "./TopBar";
 
 function App() {
@@ -19,7 +19,9 @@ function App() {
         <div className="app-container">
           <TopBar />
           <div className="mainContainer">
-            <DayView setView={setView} />
+            <div className="large-container">
+              <DayView setView={setView} />
+            </div>
           </div>
         </div>
       </dateContext.Provider>
@@ -29,7 +31,7 @@ function App() {
       <div className="app-container">
         <TopBar />
         <div className="mainContainer">
-          <div className="calendar">
+          <div className="large-container">
             <Calendar setSelectedDate={setSelectedDate} setView={setView} />
           </div>
           <div className="widgets">

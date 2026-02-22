@@ -4,7 +4,7 @@
   border-radius: 8px;
   color: var(--primary-color);
   width: 78.75vw;
-  height: 100%;
+  height: 85vh;
   display: flex;
   flex-direction: column;
 }

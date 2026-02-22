@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import "../styles/day.css";
 import Cancel from "../assets/cancel.svg?react";
 import EventModal from "./widgets/EventModal";
-import { dateContext } from "./Context";
+import { dateContext } from "../utils/Context";
 
 interface DayViewProps {
   setView: (view: "month" | "day") => void;

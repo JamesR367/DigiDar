@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import "../../styles/EventModal.css";
 import Cancel from "../../assets/cancel.svg?react";
 import { TimePicker } from "react-accessible-time-picker";
-import { dateContext } from "../Context";
+import { dateContext } from "../../utils/Context";
 
 interface User {
   id: number;
@@ -28,13 +28,6 @@ function EventModal({ setOpenModal }: EventModalProps) {
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
   const [startTime, setStartTime] = useState({ hour: "00", minute: "00" });
   const [endTime, setEndTime] = useState({ hour: "00", minute: "00" });
-  const [newEvent, setNewEvent] = useState<Event>({
-    title: "",
-    start_datetime: "",
-    end_datetime: "",
-    all_day: false,
-    user_id: 0,
-  });
   const [selectedUser, setSelectedUser] = useState<User>({
     id: 0,
     username: "",
@@ -75,7 +68,6 @@ function EventModal({ setOpenModal }: EventModalProps) {
     setOpenModal(false);
   };
 
-  console.log(newEvent);
   return (
     <div className="modal-background">
       <div className="modal-container">

@@ -21,10 +21,9 @@
   overflow: hidden;
 }
 
-.calendar {
+.large-container {
   padding-left: .5vw;
   padding-bottom: 1vh;
-  height: 100%;
   display: flex;
   align-items: flex-start;
 }
@@ -32,7 +31,7 @@
 .widgets {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 4.5vh;
   padding: 1vh 0.5vw;
   align-items: flex-start;
 }

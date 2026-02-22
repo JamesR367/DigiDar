@@ -1,4 +1,4 @@
-import "./styles/Variables.css";
+import "./styles/variables.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/index.css";

@@ -1,6 +1,5 @@
 import { DateTime } from "luxon";
 import "../styles/day.css";
-import LeftArrow from "../assets/leftArrow.svg?react";
 import Cancel from "../assets/cancel.svg?react";
 
 interface DayViewProps {

@@ -6,6 +6,7 @@ import Calendar from "./Calendar";
 import NewsSummary from "./widgets/NewsSummary";
 import DayView from "./Day";
 import TopBar from "./TopBar";
+import DailyEvents from "./widgets/DailyEvents";
 
 function App() {
   const [view, setView] = useState<"month" | "day">("month");
@@ -17,6 +18,7 @@ function App() {
         <TopBar />
         <div className="mainContainer">
           <DayView selectedDate={selectedDate} setView={setView} />
+          <DailyEvents />
         </div>
       </div>
     );

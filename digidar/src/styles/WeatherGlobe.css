@@ -3,7 +3,6 @@
   background-color: var(--background-color);
   border: solid var(--border-color), 1px;
   border-radius: 16px;
-  margin-left: 2%;
   width: 20vw; 
   height: 18vw; 
   align-items: start;

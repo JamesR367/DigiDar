@@ -16,6 +16,9 @@ function Calendar({ setSelectedDate, setView }: CalendarProps) {
   );
 
   const weekdays = Info.weekdays("short", { locale: "en-US" });
+
+  //Gets the days for that month and maps it to the day of the week
+  //Fills out the week by taking from the neighboring months and makes sure the days aren't null (Typescript thing)
   const daysOfMonth = Interval.fromDateTimes(
     firstDayOfActiveMonth.startOf("week"),
     firstDayOfActiveMonth.endOf("month").endOf("week"),
@@ -50,16 +53,8 @@ function Calendar({ setSelectedDate, setView }: CalendarProps) {
         <div className="calendar-controls">
           <button onClick={goToToday}>Today</button>
           <div className="calendar-header-arrows">
-            <LeftArrow
-              color="white"
-              onClick={goToPreviousMonth}
-              style={{ cursor: "pointer" }}
-            />
-            <RightArrow
-              color="white"
-              onClick={goToNextMonth}
-              style={{ cursor: "pointer" }}
-            />
+            <LeftArrow onClick={goToPreviousMonth} />
+            <RightArrow onClick={goToNextMonth} />
           </div>
         </div>
       </div>

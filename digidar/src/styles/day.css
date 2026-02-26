@@ -4,26 +4,52 @@
   border-radius: 8px;
   color: var(--primary-color);
   width: 78.75vw;
-  height: 100%;
+  height: 85vh;
   display: flex;
   flex-direction: column;
-  margin: 1vh 0.5vw;
 }
 
 .day-header{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-right: 1%;
-  margin-left: 1%;
-  margin-top: 1%;
+  margin: 1% 1% 0;
+}
+
+.day-header-right-side{
+  display: flex;
+  flex-direction: row;
+  gap: 1.5vw;
+}
+
+.event-button{
+  background-color: transparent;
+  color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  font-size: 100%;
+  cursor: pointer;
+  width: 60%;
+  flex-shrink: 0;
+}
+
+.event-button:hover{
+  background-color: rgba(var(--primary-rgb),.75);
+  color: var(--background-color);
 }
 
 .back-button{
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   stroke: var(--primary-color);
   cursor: pointer;
+  flex-shrink: 0;
+}
+
+.back-button:hover{
+  opacity: .6;
+  color: var(--back-button-hover-color);
 }
 
 .day-columns {

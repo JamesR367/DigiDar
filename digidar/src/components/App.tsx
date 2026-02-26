@@ -15,13 +15,6 @@ function App() {
 
   if (view === "day") {
     return (
-<<<<<<< HEAD
-      <div className="app-container">
-        <TopBar />
-        <div className="mainContainer">
-          <DayView selectedDate={selectedDate} setView={setView} />
-          <DailyEvents />
-=======
       // This allows the selectedDate state to go through different components without having to prop drill
       <dateContext.Provider value={selectedDate}>
         <div className="app-container">
@@ -29,9 +22,9 @@ function App() {
           <div className="mainContainer">
             <div className="large-container">
               <DayView setView={setView} />
+              <DailyEvents />
             </div>
           </div>
->>>>>>> origin/main
         </div>
       </dateContext.Provider>
     );

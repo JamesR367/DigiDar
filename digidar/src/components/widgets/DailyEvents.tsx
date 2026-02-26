@@ -3,7 +3,13 @@ import "../../styles/DailyEvents.css";
 function DailyEvents() {
     return (
         <div className="main-container">
-            Hi James!
+            <div className="daily-event-container">
+                <div className="user-color">
+                </div>
+                <div className="divider">
+                </div>
+                <p>Dance Party</p>
+            </div>
         </div>
     )
 }

@@ -3,9 +3,42 @@
   background-color: var(--background-color);
   border: solid var(--border-color), 1px;
   border-radius: 8px;
-  margin-top: 1vh;
   width: 20vw; 
-  height: 100%; 
+  height: 85vh; 
   align-items: start;
   color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+}
+
+.daily-event-container{
+  background-color: transparent;
+  border: solid var(--border-color), 1px;
+  color: var(--primary-color);
+  width: 60%;
+  height: 5%;
+  margin-top: 15%;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.daily-event-container p{
+  margin-left: 10%;
+}
+
+.user-color{
+  background-color: teal;
+  width: 15%;
+  height: 100%;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-left: solid teal, 1px;
+}
+
+.divider{
+  height: 100%;
+  width: 0;
+  border: solid var(--border-color), 1px;
 }

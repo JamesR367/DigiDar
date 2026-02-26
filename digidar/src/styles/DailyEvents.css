@@ -2,9 +2,10 @@
   overflow: hidden; 
   background-color: var(--background-color);
   border: solid var(--border-color), 1px;
-  border-radius: 16px;
-  margin-left: 2%;
+  border-radius: 8px;
+  margin-top: 1vh;
   width: 20vw; 
   height: 100%; 
   align-items: start;
+  color: var(--primary-color);
 }

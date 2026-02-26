@@ -3,5 +3,7 @@
   --primary-color: rgb(var(--primary-rgb));
   --border-rgb: 211, 211, 211;
   --border-color: rgb(var(--border-rgb));
-  --background-color: #242424;
+  --background-color: rgb(36, 36, 36);
+  --back-button-hover-rgb: 255, 0, 0;
+  --back-button-hover-color: rgb(var(--back-button-hover-rgb))
 }

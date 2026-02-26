@@ -26,7 +26,6 @@ function NewsSummary() {
         const response = await fetch(API_URL);
         const data = await response.json();
 
-        console.log(data);
         if (data.status === "ok") {
           setNews(data.items);
         } else {

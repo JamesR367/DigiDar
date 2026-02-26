@@ -12,6 +12,7 @@
   "dependencies": {
     "luxon": "^3.7.2",
     "react": "^19.2.0",
+    "react-accessible-time-picker": "^1.0.3",
     "react-dom": "^19.2.0",
     "react-globe.gl": "^2.37.0",
     "three": "^0.182.0"

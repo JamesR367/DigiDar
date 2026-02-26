@@ -4,7 +4,7 @@
   border-radius: 8px;
   color: var(--primary-color);
   width: 78.75vw;
-  height: 100%;
+  height: 85vh;
   display: flex;
   flex-direction: column;
 }
@@ -41,6 +41,10 @@
 	outline: inherit;
 }
 
+.calendar-header button:hover{
+  opacity: .6;
+}
+
 .calendar-header-arrows{
   display: flex;
   flex-direction: row;
@@ -51,6 +55,11 @@
   width: 24px;
   height: 24px;
   stroke: var(--primary-color);
+  cursor: pointer;
+}
+
+.calendar-header-arrows *:hover{
+  opacity: .6;
 }
 
 .daysOfTheWeek{

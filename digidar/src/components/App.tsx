@@ -5,13 +5,14 @@ import WeatherGlobeWidget from "./widgets/WeatherGlobeWidget";
 import Calendar from "./Month";
 import NewsSummary from "./widgets/NewsSummary";
 import DayView from "./Day";
-import { dateContext } from "../utils/Context";
+import { dateContext, eventsContext } from "../utils/Context";
 import TopBar from "./TopBar";
 import DailyEvents from "./widgets/DailyEvents";
 
 function App() {
   const [view, setView] = useState<"month" | "day">("month");
   const [selectedDate, setSelectedDate] = useState(DateTime.local());
+  const [selectedEvents, setSelectedEvents] = useState(Event);
 
   if (view === "day") {
     return (
@@ -21,8 +22,10 @@ function App() {
           <TopBar />
           <div className="mainContainer">
             <div className="large-container">
-              <DayView setView={setView} />
+              <DayView setView={setView} setSelectedEvents={setSelectedEvents} />
+              <eventsContext.Provider value={selectedEvents}>
               <DailyEvents />
+              </eventsContext.Provider>
             </div>
           </div>
         </div>

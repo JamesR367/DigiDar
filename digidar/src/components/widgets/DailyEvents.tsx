@@ -1,6 +1,9 @@
+import { useContext } from "react";
 import "../../styles/DailyEvents.css";
+import { eventsContext } from "../../utils/Context";
 
 function DailyEvents() {
+    const selectedEvents = useContext(eventsContext)!;
     return (
         <div className="main-container">
             <div className="daily-event-container">
@@ -8,7 +11,7 @@ function DailyEvents() {
                 </div>
                 <div className="divider">
                 </div>
-                <p>Dance Party</p>
+                <p>{selectedEvents.title}</p>
             </div>
         </div>
     )

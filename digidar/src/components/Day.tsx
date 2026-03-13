@@ -1,18 +1,40 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import "../styles/day.css";
 import Cancel from "../assets/cancel.svg?react";
 import EventModal from "./widgets/EventModal";
 import { dateContext } from "../utils/Context";
+import type { Event } from "../utils/Context";
 
 interface DayViewProps {
   setView: (view: "month" | "day") => void;
+  setSelectedEvents: Event;
 }
 
-function DayView({ setView }: DayViewProps) {
+function DayView({ setView, setSelectedEvents }: DayViewProps) {
   const selectedDate = useContext(dateContext)!;
   const amHours = Array.from({ length: 12 }, (_, i) => i);
   const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
   const [modalOpen, setModalOpen] = useState(false);
+  const [eventList, setEventList] = useState(Event);
+
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch("http://localhost:8001/events/");
+          if (!response.ok) {
+            throw new Error(`HTTP error: Status ${response.status}`);
+          }
+          const result = await response.json();
+          
+          setEventList(result.filter(item => item.start_datetime.toString().split("T")[0] == selectedDate.toISODate()));
+          setSelectedEvents(result.filter(item => item.start_datetime.toString().split("T")[0] == selectedDate.toISODate()));
+        } catch (err) {
+          console.error("Failed to fetch users:", err);
+        }
+      };
+      fetchData();
+    })    
+    console.log(eventList)
 
   const handleDayClick = () => {
     setView("month");

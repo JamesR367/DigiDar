@@ -3,19 +3,23 @@ import "../../styles/DailyEvents.css";
 import { eventsContext } from "../../utils/Context";
 
 function DailyEvents() {
-    const selectedEvents = useContext(eventsContext)!;
-    return (
-        <div className="main-container">
-            <div className="daily-event-container">
-                <div className="user-color">
-                </div>
-                <div className="divider">
-                </div>
-                <p>{selectedEvents.title}</p>
-            </div>
-        </div>
-    )
-}
+  const selectedEvents = useContext(eventsContext) ?? [];
 
+  if (selectedEvents.length === 0) {
+    return <div className="main-container">No events selected.</div>;
+  }
+
+  return (
+    <div className="main-container">
+      {selectedEvents.map((event) => (
+        <div key={event.id} className="daily-event-container">
+          <div className="user-color"></div>
+          <div className="divider"></div>
+          <p>{event.title}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default DailyEvents;

@@ -1,14 +1,14 @@
 .main-container{
-  overflow: hidden; 
   background-color: var(--background-color);
   border: solid var(--border-color), 1px;
   border-radius: 8px;
   width: 20vw; 
   height: 85vh; 
-  align-items: start;
   color: var(--primary-color);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
 }
 
 .daily-event-container{

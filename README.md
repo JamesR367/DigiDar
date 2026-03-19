@@ -14,12 +14,29 @@ Digidar is a physical calendar that has the ability to sync multiple personal ca
 ## Tech Stack:
 
 - **Frontend:** React
-- **Backend:** Node.js, Express
+- **Backend:** FastAPI (Python)
 - **Database:** MySQL
 - **Calendar Sync:** ical feed
 - **Parsing Hand Writing:**
-  - **NLP:**
-  - **OCR:** Tesseract.js
+  - **NLP:** Local OCR+NLP service (FastAPI)
+  - **OCR:** Tesseract (in Docker)
+
+## Local OCR+NLP (handwritten event input)
+
+The Day view “Add Event” modal supports a handwriting canvas that can be sent to a local OCR+NLP service to prefill the event title and times.
+
+- **Frontend config**: `VITE_OCR_NLP_URL` (default `http://localhost:8010`)
+- **API**: `POST /parse-event` (multipart `image`) → `{ rawText, title, startTime, endTime }`
+
+### Run with Docker Compose
+
+Bring up the full stack (frontend, backend, db, OCR):
+
+```bash
+docker compose up --build
+```
+
+Then in the UI: Day view → Add Event → “Write it instead” → draw “Dentist 3-4pm” → Recognize.
 
 ## Contributors:
 

@@ -3,70 +3,8 @@ import { DateTime } from "luxon";
 import "./TopBar.css";
 import CalendarSettings from "../Settings/Settings.tsx";
 import Cog from "../../assets/cog.svg?react";
-
-// Define types locally to avoid import issues
-interface WeatherData {
-  temperature: number;
-  condition: string;
-  windSpeed: number;
-  humidity: number;
-  location: string;
-}
-
-interface WeatherError {
-  message: string;
-}
-
-// Inline weather fetch function to avoid module loading issues
-async function fetchWeatherData(
-  location: string,
-): Promise<WeatherData | WeatherError> {
-  try {
-    const OWM_KEY =
-      (import.meta.env?.VITE_OPENWEATHER_KEY as string | undefined) ||
-      undefined;
-
-    if (!OWM_KEY) {
-      return { message: "OpenWeatherMap API key not configured" };
-    }
-
-    const encodedLocation = encodeURIComponent(location);
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodedLocation}&appid=${OWM_KEY}&units=imperial`;
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        return { message: `Location "${location}" not found` };
-      }
-      return {
-        message: `Weather API error: ${response.status} ${response.statusText}`,
-      };
-    }
-
-    const data = await response.json();
-
-    return {
-      temperature: Math.round(data.main.temp),
-      condition: data.weather[0].main,
-      windSpeed: Math.round(data.wind?.speed || 0),
-      humidity: data.main.humidity,
-      location: `${data.name}, ${data.sys.country}`,
-    };
-  } catch (error) {
-    return {
-      message:
-        error instanceof Error
-          ? `Failed to fetch weather: ${error.message}`
-          : "Failed to fetch weather data",
-    };
-  }
-}
-
-interface TopBarProps {
-  timeFormat?: "12h" | "24h";
-  location?: string;
-}
+import type { WeatherData, WeatherError, TopBarProps } from "./topBarUtils.ts";
+import { fetchWeatherData, formatTime, formatDate } from "./topBarUtils.ts";
 
 export default function TopBar({
   timeFormat = "12h",
@@ -79,21 +17,15 @@ export default function TopBar({
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Update time every second
   useEffect(() => {
-    const updateTime = () => {
-      setCurrentTime(DateTime.local());
-    };
-
-    updateTime(); // Set initial time immediately
+    const updateTime = () => setCurrentTime(DateTime.local());
+    updateTime();
     const interval = setInterval(updateTime, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch weather data on mount and every 15 minutes
   useEffect(() => {
-    const fetchWeather = async () => {
+    const loadWeather = async () => {
       try {
         setWeatherLoading(true);
         const result = await fetchWeatherData(location);
@@ -108,29 +40,19 @@ export default function TopBar({
       }
     };
 
-    fetchWeather(); // Fetch immediately on mount
-
-    // Refresh weather every 15 minutes (900,000 ms)
-    const weatherInterval = setInterval(fetchWeather, 900_000);
-
+    loadWeather();
+    const weatherInterval = setInterval(loadWeather, 900_000);
     return () => clearInterval(weatherInterval);
   }, [location]);
-
-  // Format time based on timeFormat prop
-  const formattedTime =
-    timeFormat === "12h"
-      ? currentTime.toFormat("hh:mm a")
-      : currentTime.toFormat("HH:mm");
-
-  // Format date
-  const formattedDate = currentTime.toFormat("cccc, LLLL d");
 
   return (
     <div className="top-bar">
       {modalOpen && <CalendarSettings setOpenModal={setModalOpen} />}
       <div className="top-bar-left">
-        <div className="time-display">{formattedTime}</div>
-        <div className="date-display">{formattedDate}</div>
+        <div className="time-display">
+          {formatTime(currentTime, timeFormat)}
+        </div>
+        <div className="date-display">{formatDate(currentTime)}</div>
       </div>
       <div className="top-bar-center">
         {weatherLoading ? (
@@ -158,12 +80,7 @@ export default function TopBar({
         <div className="events-placeholder">
           <span>No upcoming events</span>
         </div>
-        <Cog
-          className="settings-button"
-          onClick={() => {
-            setModalOpen(true);
-          }}
-        />
+        <Cog className="settings-button" onClick={() => setModalOpen(true)} />
       </div>
     </div>
   );

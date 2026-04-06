@@ -1,56 +1,24 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-type Point = { x: number; y: number };
-type Stroke = Point[];
+import type {
+  Stroke,
+  HandwritingCanvasHandle,
+  HandwritingCanvasProps,
+} from "./HandWritingCanvasUtils";
 
-export interface HandwritingCanvasHandle {
-  exportPngBlob: () => Promise<Blob>;
-  clear: () => void;
-  undo: () => void;
-}
+import { clamp, getCanvasPoint, drawStroke } from "./HandWritingCanvasUtils";
 
-export interface HandwritingCanvasProps {
-  width?: number;
-  height?: number;
-  strokeWidth?: number;
-  strokeColor?: string;
-  backgroundColor?: string;
-  disabled?: boolean;
-  onHasInkChange?: (hasInk: boolean) => void;
-}
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function getCanvasPoint(canvas: HTMLCanvasElement, clientX: number, clientY: number) {
-  const rect = canvas.getBoundingClientRect();
-  const x = (clientX - rect.left) * (canvas.width / rect.width);
-  const y = (clientY - rect.top) * (canvas.height / rect.height);
-  return { x, y };
-}
-
-function drawStroke(
-  ctx: CanvasRenderingContext2D,
-  stroke: Stroke,
-  strokeWidth: number,
-  strokeColor: string,
-) {
-  if (stroke.length === 0) return;
-  ctx.strokeStyle = strokeColor;
-  ctx.lineWidth = strokeWidth;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-
-  ctx.beginPath();
-  ctx.moveTo(stroke[0].x, stroke[0].y);
-  for (let i = 1; i < stroke.length; i++) {
-    ctx.lineTo(stroke[i].x, stroke[i].y);
-  }
-  ctx.stroke();
-}
-
-const HandwritingCanvas = forwardRef<HandwritingCanvasHandle, HandwritingCanvasProps>(function HandwritingCanvas(
+const HandWritingCanvas = forwardRef<
+  HandwritingCanvasHandle,
+  HandwritingCanvasProps
+>(function HandwritingCanvas(
   {
     width = 520,
     height = 220,
@@ -90,7 +58,15 @@ const HandwritingCanvas = forwardRef<HandwritingCanvasHandle, HandwritingCanvasP
       drawStroke(ctx, stroke, strokeWidth, strokeColor);
     }
     drawStroke(ctx, activeStroke, strokeWidth, strokeColor);
-  }, [strokes, activeStroke, width, height, strokeWidth, strokeColor, backgroundColor]);
+  }, [
+    strokes,
+    activeStroke,
+    width,
+    height,
+    strokeWidth,
+    strokeColor,
+    backgroundColor,
+  ]);
 
   const clear = () => {
     if (disabled) return;
@@ -124,7 +100,9 @@ const HandwritingCanvas = forwardRef<HandwritingCanvasHandle, HandwritingCanvasP
     (e.currentTarget as HTMLCanvasElement).setPointerCapture(e.pointerId);
     setIsDrawing(true);
     const p = getCanvasPoint(canvas, e.clientX, e.clientY);
-    setActiveStroke([{ x: clamp(p.x, 0, canvas.width), y: clamp(p.y, 0, canvas.height) }]);
+    setActiveStroke([
+      { x: clamp(p.x, 0, canvas.width), y: clamp(p.y, 0, canvas.height) },
+    ]);
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -142,19 +120,15 @@ const HandwritingCanvas = forwardRef<HandwritingCanvasHandle, HandwritingCanvasP
   const finishStroke = () => {
     if (disabled) return;
     setIsDrawing(false);
-    setStrokes((prev) => (activeStroke.length > 0 ? [...prev, activeStroke] : prev));
+    setStrokes((prev) =>
+      activeStroke.length > 0 ? [...prev, activeStroke] : prev,
+    );
     setActiveStroke([]);
   };
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      exportPngBlob,
-      clear,
-      undo,
-    }),
-    [exportPngBlob],
-  );
+  useImperativeHandle(ref, () => ({ exportPngBlob, clear, undo }), [
+    exportPngBlob,
+  ]);
 
   return (
     <div>
@@ -180,7 +154,11 @@ const HandwritingCanvas = forwardRef<HandwritingCanvasHandle, HandwritingCanvasP
         }}
       />
       <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-        <button type="button" onClick={undo} disabled={disabled || strokes.length === 0}>
+        <button
+          type="button"
+          onClick={undo}
+          disabled={disabled || strokes.length === 0}
+        >
           Undo
         </button>
         <button type="button" onClick={clear} disabled={disabled || !hasInk}>
@@ -194,4 +172,4 @@ const HandwritingCanvas = forwardRef<HandwritingCanvasHandle, HandwritingCanvasP
   );
 });
 
-export default HandwritingCanvas;
+export default HandWritingCanvas;

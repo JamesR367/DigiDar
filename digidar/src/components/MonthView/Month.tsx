@@ -1,13 +1,10 @@
-import { DateTime, Info, Interval } from "luxon";
+import { DateTime } from "luxon";
 import { useState } from "react";
-import "../styles/calendar.css";
-import LeftArrow from "../assets/leftArrow.svg?react";
-import RightArrow from "../assets/rightArrow.svg?react";
-
-interface CalendarProps {
-  setSelectedDate: (selectedDate: DateTime) => void;
-  setView: (view: "month" | "day") => void;
-}
+import "./month.css";
+import LeftArrow from "../../assets/leftArrow.svg?react";
+import RightArrow from "../../assets/rightArrow.svg?react";
+import type { CalendarProps } from "./monthUtils";
+import { getDaysOfMonth, getWeekdays } from "./monthUtils";
 
 function Calendar({ setSelectedDate, setView }: CalendarProps) {
   const today = DateTime.local();
@@ -15,17 +12,8 @@ function Calendar({ setSelectedDate, setView }: CalendarProps) {
     today.startOf("month"),
   );
 
-  const weekdays = Info.weekdays("short", { locale: "en-US" });
-
-  //Gets the days for that month and maps it to the day of the week
-  //Fills out the week by taking from the neighboring months and makes sure the days aren't null (Typescript thing)
-  const daysOfMonth = Interval.fromDateTimes(
-    firstDayOfActiveMonth.startOf("week"),
-    firstDayOfActiveMonth.endOf("month").endOf("week"),
-  )
-    .splitBy({ day: 1 })
-    .map((day) => day.start)
-    .filter((day): day is DateTime => day !== null);
+  const weekdays = getWeekdays();
+  const daysOfMonth = getDaysOfMonth(firstDayOfActiveMonth);
 
   const goToPreviousMonth = () => {
     setFirstDayOfActiveMonth(firstDayOfActiveMonth.minus({ months: 1 }));

@@ -13,10 +13,11 @@
 
 .daily-event-container{
   background-color: transparent;
-  border: solid var(--border-color), 1px;
+  border: solid var(--border-color) 1px;
   color: var(--primary-color);
   width: 60%;
-  height: 5%;
+  height: 80%;
+  min-height: 25px;
   margin-top: 15%;
   border-radius: 8px;
   display: flex;
@@ -29,12 +30,10 @@
 }
 
 .user-color{
-  background-color: teal;
   width: 15%;
   height: 100%;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
-  border-left: solid teal, 1px;
 }
 
 .divider{

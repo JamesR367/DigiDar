@@ -10,6 +10,8 @@ services:
       - /app/node_modules
     env_file:
       - .env
+    environment:
+      - VITE_OCR_NLP_URL=http://localhost:8010
     container_name: digidar-dev
     depends_on:
       db:
@@ -26,6 +28,16 @@ services:
           target: /app/public
           ignore:
             - node_modules
+
+  ocr-nlp:
+    build:
+      context: ./services/ocr-nlp
+      dockerfile: Dockerfile
+    ports:
+      - "8010:8000"
+    volumes:
+      - ./services/ocr-nlp:/app
+    container_name: digidar-ocr-nlp
 
   backend:
     build:

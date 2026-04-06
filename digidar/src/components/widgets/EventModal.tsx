@@ -1,8 +1,10 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import "../../styles/EventModal.css";
 import Cancel from "../../assets/cancel.svg?react";
 import { TimePicker } from "react-accessible-time-picker";
 import { dateContext } from "../../utils/Context";
+import HandwritingCanvas, { type HandwritingCanvasHandle } from "./HandwritingCanvas";
+import { parseHandwrittenEventImage } from "../../utils/ocrNlpClient";
 
 interface User {
   id: number;
@@ -28,6 +30,13 @@ function EventModal({ setOpenModal }: EventModalProps) {
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
   const [startTime, setStartTime] = useState({ hour: "00", minute: "00" });
   const [endTime, setEndTime] = useState({ hour: "00", minute: "00" });
+  const [handwritingOpen, setHandwritingOpen] = useState(false);
+  const [handwritingHasInk, setHandwritingHasInk] = useState(false);
+  const [ocrBusy, setOcrBusy] = useState(false);
+  const [ocrError, setOcrError] = useState<string | null>(null);
+  const [ocrRawText, setOcrRawText] = useState<string>("");
+  const canvasRef = useRef<HandwritingCanvasHandle | null>(null);
+  const ocrAbortRef = useRef<AbortController | null>(null);
   const [selectedUser, setSelectedUser] = useState<User>({
     id: 0,
     username: "",
@@ -50,6 +59,12 @@ function EventModal({ setOpenModal }: EventModalProps) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      ocrAbortRef.current?.abort();
+    };
+  }, []);
+
   const pushEvent = async (eventData: Event) => {
     try {
       const response = await fetch("http://localhost:8001/events/", {
@@ -66,6 +81,34 @@ function EventModal({ setOpenModal }: EventModalProps) {
       console.error("Failed to create event:", err);
     }
     setOpenModal(false);
+  };
+
+  const handleRecognize = async () => {
+    if (!canvasRef.current) return;
+    if (!handwritingHasInk) {
+      setOcrError("Write something first.");
+      return;
+    }
+
+    setOcrError(null);
+    setOcrBusy(true);
+    ocrAbortRef.current?.abort();
+    const ac = new AbortController();
+    ocrAbortRef.current = ac;
+
+    try {
+      const blob = await canvasRef.current.exportPngBlob();
+      const parsed = await parseHandwrittenEventImage(blob, ac.signal);
+      setOcrRawText(parsed.rawText || "");
+
+      if (parsed.title) setEventTitle(parsed.title);
+      if (parsed.startTime) setStartTime(parsed.startTime);
+      if (parsed.endTime) setEndTime(parsed.endTime);
+    } catch (e) {
+      setOcrError(e instanceof Error ? e.message : "Failed to recognize handwriting.");
+    } finally {
+      setOcrBusy(false);
+    }
   };
 
   return (
@@ -103,6 +146,17 @@ function EventModal({ setOpenModal }: EventModalProps) {
                 onChange={(e) => setIsAllDay(e.target.checked)}
               />
             </div>
+            <div className="input-group">
+              <label>Handwritten input</label>
+              <button
+                type="button"
+                onClick={() => setHandwritingOpen((v) => !v)}
+                className="create-button"
+                style={{ width: "100%", height: "48px" }}
+              >
+                {handwritingOpen ? "Hide handwriting" : "Write it instead"}
+              </button>
+            </div>
           </div>
           <div className="right-panel">
             <div className="input-group">
@@ -136,6 +190,47 @@ function EventModal({ setOpenModal }: EventModalProps) {
                 onChange={(e) => setEventTitle(e.target.value)}
               />
             </div>
+            {handwritingOpen && (
+              <div className="input-group">
+                <label>Handwriting</label>
+                <HandwritingCanvas
+                  ref={canvasRef}
+                  onHasInkChange={setHandwritingHasInk}
+                  disabled={ocrBusy}
+                />
+                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+                  <button
+                    type="button"
+                    className="create-button"
+                    style={{ width: "100%", height: "48px" }}
+                    onClick={handleRecognize}
+                    disabled={ocrBusy || !handwritingHasInk}
+                  >
+                    {ocrBusy ? "Recognizing..." : "Recognize"}
+                  </button>
+                </div>
+                {ocrError && (
+                  <div style={{ marginTop: 8, color: "#b00020", fontSize: 12 }}>
+                    {ocrError}
+                  </div>
+                )}
+                {ocrRawText && (
+                  <div style={{ marginTop: 8, fontSize: 12, opacity: 0.9 }}>
+                    <div style={{ fontWeight: 700, marginBottom: 4 }}>Detected text</div>
+                    <div
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        border: "1px solid rgba(0,0,0,0.15)",
+                        borderRadius: 8,
+                        padding: 10,
+                      }}
+                    >
+                      {ocrRawText}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="footer">

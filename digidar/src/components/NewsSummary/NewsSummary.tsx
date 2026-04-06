@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import "./NewsSummary.css";
 import LeftArrow from "../../assets/leftArrow.svg?react";
 import RightArrow from "../../assets/rightArrow.svg?react";
-import type { NewsItem } from "../../utils/newsSummaryUtils";
-import { fetchNews } from "../../utils/newsSummaryUtils";
+import type { NewsItem } from "./newsSummaryUtils";
+import { fetchNews } from "./newsSummaryUtils";
 
 function NewsSummary() {
   const [news, setNews] = useState<NewsItem[]>([]);

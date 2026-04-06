@@ -7,6 +7,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String(50), unique=True)
+    color = Column(String(50), unique=True)
 
 class Event(Base):
     __tablename__ = 'events'

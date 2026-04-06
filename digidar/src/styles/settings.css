@@ -1,0 +1,66 @@
+.add-user-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+}
+
+.add-user-label {
+  font-weight: bolder;
+  margin-bottom: 2px;
+}
+
+.add-user-input-row {
+  display: flex;
+  align-items: stretch;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(var(--primary-rgb), 0.25);
+}
+
+.add-user-name-input {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: rgba(var(--primary-rgb), 0.05);
+  color: var(--primary-color);
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.add-user-name-input::placeholder {
+  color: rgba(var(--primary-rgb), 0.4);
+}
+
+.user-color-selection {
+  padding: 8px 10px;
+  background-color: rgba(var(--primary-rgb), 0.08);
+  color: var(--primary-color);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-left: 3px solid white;
+  transition: border-left-color 0.2s ease;
+}
+
+.user-color-selection option{
+  background-color: var(--background-color);
+}
+
+.add-user-button {
+  align-self: flex-end;
+  padding: 7px 22px;
+  border-radius: 6px;
+  border: 1px solid rgba(var(--primary-rgb), 0.3);
+  background-color: transparent;
+  color: var(--primary-color);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.add-user-button:hover {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  border-color: rgba(var(--primary-rgb), 0.6);
+}

@@ -28,6 +28,7 @@ app.add_middleware(
 #Objects for each table in the database
 class UserBase(BaseModel):
     username: str
+    color: str
 
 class EventBase(BaseModel):
     title: str

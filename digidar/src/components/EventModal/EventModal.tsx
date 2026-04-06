@@ -3,29 +3,16 @@ import "./EventModal.css";
 import Cancel from "../../assets/cancel.svg?react";
 import { TimePicker } from "react-accessible-time-picker";
 import { dateContext } from "../../utils/Context";
-import HandwritingCanvas, {
-  type HandwritingCanvasHandle,
-} from "../HandWritingCanvas/HandwritingCanvas";
+import HandwritingCanvas from "../HandWritingCanvas/HandwritingCanvas";
+import type { HandwritingCanvasHandle } from "../HandWritingCanvas/HandWritingCanvasUtils";
 import { parseHandwrittenEventImage } from "../../utils/ocrNlpClient";
-
-interface User {
-  id: number;
-  username: string;
-  color: string;
-}
-
-interface Event {
-  title: string;
-  start_datetime: string;
-  end_datetime: string;
-  all_day: boolean;
-  user_id: number;
-  user_color: string;
-}
-
-interface EventModalProps {
-  setOpenModal: (OpenModal: boolean) => void;
-}
+import {
+  type User,
+  type EventModalProps,
+  fetchUsers,
+  pushEvent,
+  buildEventData,
+} from "./EventModalUtils";
 
 function EventModal({ setOpenModal }: EventModalProps) {
   const selectedDate = useContext(dateContext)!;
@@ -48,20 +35,9 @@ function EventModal({ setOpenModal }: EventModalProps) {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:8001/users/");
-        if (!response.ok) {
-          throw new Error(`HTTP error: Status ${response.status}`);
-        }
-        const result = await response.json();
-        setUserList(result);
-      } catch (err) {
-        console.error("Failed to fetch users:", err);
-      }
-    };
-
-    fetchData();
+    fetchUsers()
+      .then((users) => setUserList(users))
+      .catch((err) => console.error("Failed to fetch users:", err));
   }, []);
 
   useEffect(() => {
@@ -69,23 +45,6 @@ function EventModal({ setOpenModal }: EventModalProps) {
       ocrAbortRef.current?.abort();
     };
   }, []);
-
-  const pushEvent = async (eventData: Event) => {
-    try {
-      const response = await fetch("http://localhost:8001/events/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(eventData),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error: Status ${response.status}`);
-      }
-      const result = await response.json();
-    } catch (err) {
-      console.error("Failed to create event:", err);
-    }
-    setOpenModal(false);
-  };
 
   const handleRecognize = async () => {
     if (!canvasRef.current) return;
@@ -115,6 +74,27 @@ function EventModal({ setOpenModal }: EventModalProps) {
     } finally {
       setOcrBusy(false);
     }
+  };
+
+  const handleCreateEvent = async () => {
+    if (selectedUser.id === 0) {
+      alert("Please select a user before creating an event.");
+      return;
+    }
+    const eventData = buildEventData(
+      selectedDate.toISODate()!,
+      eventTitle,
+      startTime,
+      endTime,
+      isAllDay,
+      selectedUser,
+    );
+    try {
+      await pushEvent(eventData);
+    } catch (err) {
+      console.error("Failed to create event:", err);
+    }
+    setOpenModal(false);
   };
 
   return (
@@ -242,27 +222,7 @@ function EventModal({ setOpenModal }: EventModalProps) {
           </div>
         </div>
         <div className="footer">
-          <button
-            className="create-button"
-            onClick={() => {
-              if (selectedUser.id === 0) {
-                alert("Please select a user before creating an event.");
-                return;
-              }
-              const date = selectedDate.toISODate();
-              const eventData: Event = {
-                title: eventTitle,
-                start_datetime:
-                  date + "T" + startTime.hour + ":" + startTime.minute + ":00",
-                end_datetime:
-                  date + "T" + endTime.hour + ":" + endTime.minute + ":00",
-                all_day: isAllDay,
-                user_id: selectedUser.id,
-                user_color: selectedUser.color,
-              };
-              pushEvent(eventData);
-            }}
-          >
+          <button className="create-button" onClick={handleCreateEvent}>
             Create Event
           </button>
         </div>

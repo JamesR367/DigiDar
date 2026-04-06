@@ -3,8 +3,8 @@ import { useState } from "react";
 import "./month.css";
 import LeftArrow from "../../assets/leftArrow.svg?react";
 import RightArrow from "../../assets/rightArrow.svg?react";
-import type { CalendarProps } from "../../utils/monthUtils";
-import { getDaysOfMonth, getWeekdays } from "../../utils/monthUtils";
+import type { CalendarProps } from "./monthUtils";
+import { getDaysOfMonth, getWeekdays } from "./monthUtils";
 
 function Calendar({ setSelectedDate, setView }: CalendarProps) {
   const today = DateTime.local();

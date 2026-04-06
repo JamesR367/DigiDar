@@ -1,7 +1,9 @@
 import { useState } from "react";
 import "./settings.css";
 import Cancel from "../../assets/cancel.svg?react";
-import type { User, SettingModalProps } from "./SettingsUtils";
+import type { SettingModalProps } from "./SettingsUtils";
+import type { User } from "../../utils/types";
+export type { User };
 import {
   COLOR_OPTIONS,
   rgbStringToHex,
@@ -29,7 +31,7 @@ function CalendarSettings({ setOpenModal }: SettingModalProps) {
   }
 
   const handleAddUser = async () => {
-    const userData: User = { username: userName, color: selectedColor };
+    const userData: User = { id: 0, username: userName, color: selectedColor };
     try {
       await pushUser(userData);
     } catch (err) {

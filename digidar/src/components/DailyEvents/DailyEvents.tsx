@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import "./DailyEvents.css";
+import "../../styles/DailyEvents.css";
 import { eventsContext } from "../../utils/Context";
 
 function DailyEvents() {
@@ -9,7 +9,6 @@ function DailyEvents() {
     return <div className="main-container">No events selected.</div>;
   }
 
-  console.log(selectedEvents[1]);
   return (
     <div className="main-container">
       {selectedEvents.map((event) => (

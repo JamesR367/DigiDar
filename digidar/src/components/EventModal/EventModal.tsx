@@ -6,8 +6,9 @@ import { dateContext } from "../../utils/Context";
 import HandwritingCanvas from "../HandWritingCanvas/HandwritingCanvas";
 import type { HandwritingCanvasHandle } from "../HandWritingCanvas/HandWritingCanvasUtils";
 import { parseHandwrittenEventImage } from "../../utils/ocrNlpClient";
+import type { User, Event } from "../../utils/types";
+export type { User, Event };
 import {
-  type User,
   type EventModalProps,
   fetchUsers,
   pushEvent,

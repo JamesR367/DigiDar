@@ -1,76 +1,15 @@
 import { useState, useContext, useEffect } from "react";
-import type { Dispatch, SetStateAction } from "react";
 import "./day.css";
 import Cancel from "../../assets/cancel.svg?react";
 import EventModal from "../EventModal/EventModal";
-import { dateContext } from "../../utils/Context";
-import type { CalendarEvent } from "../../utils/Context";
-
-type DayViewProps = {
-  setView: Dispatch<SetStateAction<"month" | "day">>;
-  setSelectedEvents: Dispatch<SetStateAction<CalendarEvent[]>>;
-};
-
-interface PositionedEvent {
-  event: CalendarEvent;
-  column: number;
-  totalColumns: number;
-}
-
-function layoutEvents(events: CalendarEvent[]): PositionedEvent[] {
-  const sorted = [...events].sort(
-    (a, b) =>
-      new Date(a.start_datetime).getTime() -
-      new Date(b.start_datetime).getTime(),
-  );
-
-  const positioned: PositionedEvent[] = sorted.map((e) => ({
-    event: e,
-    column: 0,
-    totalColumns: 1,
-  }));
-
-  const visited = new Set<number>();
-
-  for (let i = 0; i < positioned.length; i++) {
-    if (visited.has(i)) continue;
-
-    const cluster: number[] = [i];
-    visited.add(i);
-
-    for (let j = i + 1; j < positioned.length; j++) {
-      const aEnd = new Date(positioned[i].event.end_datetime).getTime();
-      const bStart = new Date(positioned[j].event.start_datetime).getTime();
-      if (bStart < aEnd) {
-        cluster.push(j);
-        visited.add(j);
-      }
-    }
-
-    const colEndTimes: number[] = [];
-
-    for (const idx of cluster) {
-      const startTime = new Date(
-        positioned[idx].event.start_datetime,
-      ).getTime();
-      let col = colEndTimes.findIndex((endTime) => endTime <= startTime);
-
-      if (col === -1) {
-        col = colEndTimes.length;
-        colEndTimes.push(0);
-      }
-
-      colEndTimes[col] = new Date(positioned[idx].event.end_datetime).getTime();
-      positioned[idx].column = col;
-    }
-
-    for (const idx of cluster) {
-      positioned[idx].totalColumns = colEndTimes.length;
-    }
-  }
-
-  return positioned;
-}
+import { dateContext, type CalendarEvent } from "../../utils/Context";
+import {
+  type DayViewProps,
+  EVENT_LAYOUT,
+  layoutEvents,
+  fetchDayEvents,
+  formatTime,
+} from "./DayUtils";
 
 function DayView({ setView, setSelectedEvents }: DayViewProps) {
   const selectedDate = useContext(dateContext)!;
@@ -80,30 +19,13 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
   const [eventList, setEventList] = useState<CalendarEvent[]>([]);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch("http://localhost:8001/events/");
-        if (!response.ok)
-          throw new Error(`HTTP error: Status ${response.status}`);
-
-        const allEvents: CalendarEvent[] = await response.json();
-        const todaysEvents = allEvents.filter(
-          (event) =>
-            event.start_datetime.toString().split("T")[0] ===
-            selectedDate.toISODate(),
-        );
-        setEventList(todaysEvents);
-        setSelectedEvents(todaysEvents);
-      } catch (err) {
-        console.error("Failed to fetch events:", err);
-      }
-    };
-
-    fetchEvents();
+    fetchDayEvents(selectedDate.toISODate()!)
+      .then((events) => {
+        setEventList(events);
+        setSelectedEvents(events);
+      })
+      .catch((err) => console.error("Failed to fetch events:", err));
   });
-
-  const formatTime = (d: Date) =>
-    d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 
   const renderHalfDay = (hours: number[]) => {
     const firstHour = hours[0];
@@ -122,10 +44,12 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
 
     const positioned = layoutEvents(visibleEvents);
 
-    const LEFT_OFFSET_PCT = 0.75;
-    const TOTAL_WIDTH_PCT = 98;
-    const TIME_LABEL_WIDTH_PCT = 11;
-    const INSET_PCT = 0.4;
+    const {
+      LEFT_OFFSET_PCT,
+      TOTAL_WIDTH_PCT,
+      TIME_LABEL_WIDTH_PCT,
+      INSET_PCT,
+    } = EVENT_LAYOUT;
     const usableWidth = TOTAL_WIDTH_PCT - TIME_LABEL_WIDTH_PCT;
 
     return (
@@ -143,7 +67,6 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
             );
           })}
         </div>
-
         <div className="event-layer">
           {positioned.map(({ event, column, totalColumns }) => {
             const start = new Date(event.start_datetime);

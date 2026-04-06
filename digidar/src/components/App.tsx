@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DateTime } from "luxon";
 import "../styles/App.css";
-import WeatherGlobeWidget from "./widgets/WeatherGlobeWidget";
+// import WeatherGlobeWidget from "./widgets/WeatherGlobeWidget";
 import Calendar from "./Month";
 import NewsSummary from "./widgets/NewsSummary";
 import DayView from "./Day";
@@ -35,7 +35,7 @@ function App() {
             <Calendar setSelectedDate={setSelectedDate} setView={setView} />
           </div>
           <div className="widgets">
-            <WeatherGlobeWidget />
+            {/* <WeatherGlobeWidget /> */}
             <NewsSummary />
           </div>
           <div></div>

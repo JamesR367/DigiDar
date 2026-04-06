@@ -92,3 +92,14 @@
   font-style: italic;
 }
 
+.settings-button{
+  width: 30px;
+  height: 30px;
+  stroke: var(--primary-color);
+  cursor: pointer;
+  margin-left: 4%;
+}
+
+.settings-button:hover{
+  opacity: .6;
+}

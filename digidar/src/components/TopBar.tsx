@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { DateTime } from "luxon";
+import { DateTime, Settings } from "luxon";
 import "../styles/TopBar.css";
+import CalendarSettings from "./widgets/Settings.tsx";
+import Cog from "../assets/cog.svg?react";
 
 // Define types locally to avoid import issues
 interface WeatherData {
@@ -16,10 +18,14 @@ interface WeatherError {
 }
 
 // Inline weather fetch function to avoid module loading issues
-async function fetchWeatherData(location: string): Promise<WeatherData | WeatherError> {
+async function fetchWeatherData(
+  location: string,
+): Promise<WeatherData | WeatherError> {
   try {
-    const OWM_KEY = (import.meta.env?.VITE_OPENWEATHER_KEY as string | undefined) || undefined;
-    
+    const OWM_KEY =
+      (import.meta.env?.VITE_OPENWEATHER_KEY as string | undefined) ||
+      undefined;
+
     if (!OWM_KEY) {
       return { message: "OpenWeatherMap API key not configured" };
     }
@@ -33,7 +39,9 @@ async function fetchWeatherData(location: string): Promise<WeatherData | Weather
       if (response.status === 404) {
         return { message: `Location "${location}" not found` };
       }
-      return { message: `Weather API error: ${response.status} ${response.statusText}` };
+      return {
+        message: `Weather API error: ${response.status} ${response.statusText}`,
+      };
     }
 
     const data = await response.json();
@@ -47,7 +55,10 @@ async function fetchWeatherData(location: string): Promise<WeatherData | Weather
     };
   } catch (error) {
     return {
-      message: error instanceof Error ? `Failed to fetch weather: ${error.message}` : "Failed to fetch weather data",
+      message:
+        error instanceof Error
+          ? `Failed to fetch weather: ${error.message}`
+          : "Failed to fetch weather data",
     };
   }
 }
@@ -66,6 +77,7 @@ export default function TopBar({
     null,
   );
   const [weatherLoading, setWeatherLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
 
   // Update time every second
   useEffect(() => {
@@ -88,7 +100,8 @@ export default function TopBar({
         setWeather(result);
       } catch (error) {
         setWeather({
-          message: error instanceof Error ? error.message : "Failed to fetch weather",
+          message:
+            error instanceof Error ? error.message : "Failed to fetch weather",
         });
       } finally {
         setWeatherLoading(false);
@@ -114,6 +127,7 @@ export default function TopBar({
 
   return (
     <div className="top-bar">
+      {modalOpen && <CalendarSettings setOpenModal={setModalOpen} />}
       <div className="top-bar-left">
         <div className="time-display">{formattedTime}</div>
         <div className="date-display">{formattedDate}</div>
@@ -134,7 +148,9 @@ export default function TopBar({
           </div>
         ) : (
           <div className="weather-error">
-            {weather && "message" in weather ? weather.message : "Weather unavailable"}
+            {weather && "message" in weather
+              ? weather.message
+              : "Weather unavailable"}
           </div>
         )}
       </div>
@@ -142,6 +158,12 @@ export default function TopBar({
         <div className="events-placeholder">
           <span>No upcoming events</span>
         </div>
+        <Cog
+          className="settings-button"
+          onClick={() => {
+            setModalOpen(true);
+          }}
+        />
       </div>
     </div>
   );

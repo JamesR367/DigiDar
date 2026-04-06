@@ -15,7 +15,7 @@ import type {
 
 import { clamp, getCanvasPoint, drawStroke } from "./HandWritingCanvasUtils";
 
-const HandwritingCanvas = forwardRef<
+const HandWritingCanvas = forwardRef<
   HandwritingCanvasHandle,
   HandwritingCanvasProps
 >(function HandwritingCanvas(
@@ -172,4 +172,4 @@ const HandwritingCanvas = forwardRef<
   );
 });
 
-export default HandwritingCanvas;
+export default HandWritingCanvas;

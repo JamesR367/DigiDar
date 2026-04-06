@@ -3,11 +3,11 @@ import "./EventModal.css";
 import Cancel from "../../assets/cancel.svg?react";
 import { TimePicker } from "react-accessible-time-picker";
 import { dateContext } from "../../utils/Context";
-import HandwritingCanvas from "../HandWritingCanvas/HandwritingCanvas";
+import HandWritingCanvas from "../HandWritingCanvas/HandwritingCanvas";
 import type { HandwritingCanvasHandle } from "../HandWritingCanvas/HandWritingCanvasUtils";
 import { parseHandwrittenEventImage } from "../../utils/ocrNlpClient";
-import type { User, Event } from "../../utils/types";
-export type { User, Event };
+import type { User } from "../../utils/types";
+
 import {
   type EventModalProps,
   fetchUsers,
@@ -180,7 +180,7 @@ function EventModal({ setOpenModal }: EventModalProps) {
             {handwritingOpen && (
               <div className="input-group">
                 <label>Handwriting</label>
-                <HandwritingCanvas
+                <HandWritingCanvas
                   ref={canvasRef}
                   onHasInkChange={setHandwritingHasInk}
                   disabled={ocrBusy}

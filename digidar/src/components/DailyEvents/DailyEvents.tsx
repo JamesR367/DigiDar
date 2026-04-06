@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import "../../styles/DailyEvents.css";
+import "./DailyEvents.css";
 import { eventsContext } from "../../utils/Context";
 
 function DailyEvents() {

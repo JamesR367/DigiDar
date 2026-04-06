@@ -36,6 +36,7 @@ class EventBase(BaseModel):
     end_datetime: datetime
     all_day: bool
     user_id: int
+    user_color: str
 
 class EventRecurrenceBase(BaseModel):
     event_id: int
@@ -73,7 +74,22 @@ async def create_event(event: EventBase, db: db_dependency):
 
 @app.get("/events/")
 async def get_events(db: db_dependency):
-    return db.query(models.Event).all()
+    events = db.query(models.Event).all()
+    
+    result = []
+    for event in events:
+        user = db.query(models.User).filter(models.User.id == event.user_id).first()
+        result.append({
+            "id": event.id,
+            "title": event.title,
+            "start_datetime": event.start_datetime,
+            "end_datetime": event.end_datetime,
+            "all_day": event.all_day,
+            "user_id": event.user_id,
+            "color": user.color if user else None
+        })
+    
+    return result
 
 @app.get("/users/")
 async def get_users(db: db_dependency):

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { DateTime, Settings } from "luxon";
-import "../styles/TopBar.css";
-import CalendarSettings from "./widgets/Settings.tsx";
-import Cog from "../assets/cog.svg?react";
+import { DateTime } from "luxon";
+import "./TopBar.css";
+import CalendarSettings from "../Settings/Settings.tsx";
+import Cog from "../../assets/cog.svg?react";
 
 // Define types locally to avoid import issues
 interface WeatherData {

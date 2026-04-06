@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { DateTime } from "luxon";
 import "../styles/App.css";
-// import WeatherGlobeWidget from "./widgets/WeatherGlobeWidget";
-import Calendar from "./Month";
-import NewsSummary from "./widgets/NewsSummary";
-import DayView from "./Day";
+import WeatherGlobeWidget from "./WeatherGlobe/WeatherGlobeWidget";
+import Calendar from "./MonthView/Month";
+import NewsSummary from "./NewsSummary/NewsSummary";
+import DayView from "./DayView/Day";
 import { dateContext, eventsContext } from "../utils/Context";
 import type { CalendarEvent } from "../utils/Context";
-import TopBar from "./TopBar";
-import DailyEvents from "./widgets/DailyEvents";
+import TopBar from "./TopBar/TopBar";
+import DailyEvents from "./DailyEvents/DailyEvents";
 
 function App() {
   const [view, setView] = useState<"month" | "day">("month");
@@ -44,7 +44,7 @@ function App() {
             <Calendar setSelectedDate={setSelectedDate} setView={setView} />
           </div>
           <div className="widgets">
-            {/* <WeatherGlobeWidget /> */}
+            <WeatherGlobeWidget />
             <NewsSummary />
           </div>
           <div></div>

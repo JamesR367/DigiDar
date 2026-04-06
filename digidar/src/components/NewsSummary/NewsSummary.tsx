@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
-import "../../styles/NewsSummary.css";
+import "./NewsSummary.css";
 import LeftArrow from "../../assets/leftArrow.svg?react";
 import RightArrow from "../../assets/rightArrow.svg?react";
-
-interface NewsItem {
-  title: string;
-  link: string;
-  pubDate: string;
-  description: string;
-}
+import type { NewsItem } from "../../utils/newsSummaryUtils";
+import { fetchNews } from "../../utils/newsSummaryUtils";
 
 function NewsSummary() {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -18,25 +13,9 @@ function NewsSummary() {
   const [animationTrigger, setAnimationTrigger] = useState(true);
 
   useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const RSS_URL = "https://abcnews.go.com/abcnews/topstories";
-        const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
-
-        const response = await fetch(API_URL);
-        const data = await response.json();
-
-        if (data.status === "ok") {
-          setNews(data.items);
-        } else {
-          setError("Failed to fetch news");
-        }
-      } catch (err) {
-        setError("Error fetching news: " + err);
-      }
-    };
-
-    fetchNews();
+    fetchNews()
+      .then((items) => setNews(items))
+      .catch((err) => setError("Error fetching news: " + err));
   }, []);
 
   useEffect(() => {
@@ -51,19 +30,19 @@ function NewsSummary() {
 
   const changeArticle = (direction: number) => {
     switch (true) {
-      case newsIndex == news.length - 1 && direction > 0:
+      case newsIndex === news.length - 1 && direction > 0:
         setGoingRight(true);
         setNewsIndex(0);
         break;
-      case newsIndex == news.length - 1 && direction > 0:
+      case newsIndex === 0 && direction < 0:
         setGoingRight(false);
         setNewsIndex(news.length - 1);
         break;
-      case direction == 1:
+      case direction === 1:
         setGoingRight(true);
         setNewsIndex(newsIndex + direction);
         break;
-      case direction == -1:
+      case direction === -1:
         setGoingRight(false);
         setNewsIndex(newsIndex + direction);
         break;

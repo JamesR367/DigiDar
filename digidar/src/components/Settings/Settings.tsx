@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "../../styles/settings.css";
+import "./settings.css";
 import Cancel from "../../assets/cancel.svg?react";
 
 interface User {

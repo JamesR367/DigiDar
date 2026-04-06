@@ -1,10 +1,10 @@
 import { useState, useContext, useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
-import "../styles/day.css";
-import Cancel from "../assets/cancel.svg?react";
-import EventModal from "./widgets/EventModal";
-import { dateContext } from "../utils/Context";
-import type { CalendarEvent } from "../utils/Context";
+import "./day.css";
+import Cancel from "../../assets/cancel.svg?react";
+import EventModal from "../EventModal/EventModal";
+import { dateContext } from "../../utils/Context";
+import type { CalendarEvent } from "../../utils/Context";
 
 type DayViewProps = {
   setView: Dispatch<SetStateAction<"month" | "day">>;
@@ -92,7 +92,6 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
             event.start_datetime.toString().split("T")[0] ===
             selectedDate.toISODate(),
         );
-
         setEventList(todaysEvents);
         setSelectedEvents(todaysEvents);
       } catch (err) {
@@ -174,6 +173,7 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
                   height: `calc(${heightPct}% - 2px)`,
                   left: `${leftPct + INSET_PCT}%`,
                   width: `${colWidth - INSET_PCT * 2 - 0.3}%`,
+                  borderLeftColor: event.color,
                 }}
               >
                 <span className="calendar-event-title">{event.title}</span>

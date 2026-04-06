@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import "../../styles/EventModal.css";
+import "./EventModal.css";
 import Cancel from "../../assets/cancel.svg?react";
 import { TimePicker } from "react-accessible-time-picker";
 import { dateContext } from "../../utils/Context";
-import HandwritingCanvas, { type HandwritingCanvasHandle } from "./HandwritingCanvas";
+import HandwritingCanvas, {
+  type HandwritingCanvasHandle,
+} from "../HandWritingCanvas/HandwritingCanvas";
 import { parseHandwrittenEventImage } from "../../utils/ocrNlpClient";
 
 interface User {
   id: number;
   username: string;
+  color: string;
 }
 
 interface Event {
@@ -17,6 +20,7 @@ interface Event {
   end_datetime: string;
   all_day: boolean;
   user_id: number;
+  user_color: string;
 }
 
 interface EventModalProps {
@@ -40,6 +44,7 @@ function EventModal({ setOpenModal }: EventModalProps) {
   const [selectedUser, setSelectedUser] = useState<User>({
     id: 0,
     username: "",
+    color: "",
   });
 
   useEffect(() => {
@@ -104,7 +109,9 @@ function EventModal({ setOpenModal }: EventModalProps) {
       if (parsed.startTime) setStartTime(parsed.startTime);
       if (parsed.endTime) setEndTime(parsed.endTime);
     } catch (e) {
-      setOcrError(e instanceof Error ? e.message : "Failed to recognize handwriting.");
+      setOcrError(
+        e instanceof Error ? e.message : "Failed to recognize handwriting.",
+      );
     } finally {
       setOcrBusy(false);
     }
@@ -215,7 +222,9 @@ function EventModal({ setOpenModal }: EventModalProps) {
                 )}
                 {ocrRawText && (
                   <div style={{ marginTop: 8, fontSize: 12, opacity: 0.9 }}>
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>Detected text</div>
+                    <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                      Detected text
+                    </div>
                     <div
                       style={{
                         whiteSpace: "pre-wrap",
@@ -249,6 +258,7 @@ function EventModal({ setOpenModal }: EventModalProps) {
                   date + "T" + endTime.hour + ":" + endTime.minute + ":00",
                 all_day: isAllDay,
                 user_id: selectedUser.id,
+                user_color: selectedUser.color,
               };
               pushEvent(eventData);
             }}

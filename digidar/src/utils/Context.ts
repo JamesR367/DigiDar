@@ -8,6 +8,7 @@ export interface CalendarEvent {
     end_datetime: string,
     id: number,
     user_id: number,
+    color: string;
     title: string,
     start_datetime: string,
     all_day: boolean

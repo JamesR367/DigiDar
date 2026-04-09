@@ -38,6 +38,13 @@ class EventBase(BaseModel):
     user_id: int
     user_color: str
 
+class EventUpdate(BaseModel):
+    title: str | None = None
+    start_datetime: datetime | None = None
+    end_datetime: datetime | None = None
+    all_day: bool | None = None
+    user_id: int | None = None
+
 class EventRecurrenceBase(BaseModel):
     event_id: int
     frequency: str
@@ -66,7 +73,15 @@ async def create_user(user: UserBase, db: db_dependency):
 
 @app.post("/events/", status_code=status.HTTP_201_CREATED)
 async def create_event(event: EventBase, db: db_dependency):
-    db_event = models.Event(**event.model_dump())
+    # Ensure the stored user_color matches the selected user_id.
+    user = db.query(models.User).filter(models.User.id == event.user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user_id")
+
+    payload = event.model_dump()
+    payload["user_color"] = user.color
+
+    db_event = models.Event(**payload)
     db.add(db_event)
     db.commit()
     db.refresh(db_event)
@@ -94,3 +109,55 @@ async def get_events(db: db_dependency):
 @app.get("/users/")
 async def get_users(db: db_dependency):
     return db.query(models.User).all()
+
+@app.patch("/events/{event_id}")
+async def update_event(event_id: int, event: EventUpdate, db: db_dependency):
+    db_event = db.query(models.Event).filter(models.Event.id == event_id).first()
+    if not db_event:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
+
+    updates = event.model_dump(exclude_unset=True)
+
+    if "title" in updates:
+        db_event.title = updates["title"]
+    if "start_datetime" in updates:
+        db_event.start_datetime = updates["start_datetime"]
+    if "end_datetime" in updates:
+        db_event.end_datetime = updates["end_datetime"]
+    if "all_day" in updates:
+        db_event.all_day = updates["all_day"]
+
+    if "user_id" in updates:
+        user = db.query(models.User).filter(models.User.id == updates["user_id"]).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user_id")
+        db_event.user_id = user.id
+        db_event.user_color = user.color
+    else:
+        # Keep user_color consistent with the event's selected user.
+        user = db.query(models.User).filter(models.User.id == db_event.user_id).first()
+        db_event.user_color = user.color if user else db_event.user_color
+
+    db.commit()
+    db.refresh(db_event)
+
+    user = db.query(models.User).filter(models.User.id == db_event.user_id).first()
+    return {
+        "id": db_event.id,
+        "title": db_event.title,
+        "start_datetime": db_event.start_datetime,
+        "end_datetime": db_event.end_datetime,
+        "all_day": db_event.all_day,
+        "user_id": db_event.user_id,
+        "color": user.color if user else None,
+    }
+
+@app.delete("/events/{event_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_event(event_id: int, db: db_dependency):
+    db_event = db.query(models.Event).filter(models.Event.id == event_id).first()
+    if not db_event:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
+
+    db.delete(db_event)
+    db.commit()
+    return None

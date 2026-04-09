@@ -103,6 +103,8 @@
 .event-area {
   height: 100%;
   width: 100%;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .event-area.even-hour {

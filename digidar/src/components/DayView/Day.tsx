@@ -27,6 +27,7 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
   const [slotAllDayEvents, setSlotAllDayEvents] = useState<CalendarEvent[]>([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<CalendarEvent | null>(null);
+  const [slotInitialSelectedId, setSlotInitialSelectedId] = useState<number | null>(null);
 
   const reloadEvents = async () => {
     const events = await fetchDayEvents(selectedDate.toISODate()!);
@@ -58,7 +59,14 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
     setSlotEnd(slotEndDate);
     setSlotEvents(overlaps);
     setSlotAllDayEvents(allDay);
+    setSlotInitialSelectedId(null);
     setSlotModalOpen(true);
+  };
+
+  const openSlotModalForEvent = (ev: CalendarEvent) => {
+    const start = new Date(ev.start_datetime);
+    setSlotInitialSelectedId(ev.id);
+    openSlotModalForHour(start.getHours());
   };
 
   const renderHalfDay = (hours: number[]) => {
@@ -92,18 +100,19 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
           {hours.map((hour) => {
             const label = selectedDate.set({ hour, minute: 0 });
             return (
-              <div key={hour} className="hour-slot">
+              <div
+                key={hour}
+                className="hour-slot"
+                role="button"
+                tabIndex={0}
+                onClick={() => openSlotModalForHour(hour)}
+                onPointerDown={(e) => {
+                  if (e.pointerType === "pen") openSlotModalForHour(hour);
+                }}
+              >
                 <span className="time-label">{label.toFormat("h a")}</span>
                 <div
                   className={`event-area ${hour % 2 === 0 ? "even-hour" : "odd-hour"}`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => openSlotModalForHour(hour)}
-                  onPointerDown={(e) => {
-                    if (e.pointerType === "pen") {
-                      openSlotModalForHour(hour);
-                    }
-                  }}
                 />
               </div>
             );
@@ -140,6 +149,12 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
                   width: `${colWidth - INSET_PCT * 2 - 0.3}%`,
                   borderLeftColor: event.color,
                 }}
+                role="button"
+                tabIndex={0}
+                onClick={() => openSlotModalForEvent(event)}
+                onPointerDown={(e) => {
+                  if (e.pointerType === "pen") openSlotModalForEvent(event);
+                }}
               >
                 <span className="calendar-event-title">{event.title}</span>
                 <span className="calendar-event-time">
@@ -170,6 +185,7 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
           slotEnd={slotEnd}
           events={slotEvents}
           allDayEvents={slotAllDayEvents}
+          initialSelectedEventId={slotInitialSelectedId}
           onClose={() => setSlotModalOpen(false)}
           onRequestEdit={(ev) => {
             setSlotModalOpen(false);

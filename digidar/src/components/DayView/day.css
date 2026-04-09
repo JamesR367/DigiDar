@@ -87,6 +87,8 @@
   flex: 1;
   border-bottom: 1px solid var(--border-color);
   margin-left: 0.75%;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .time-label {
@@ -137,6 +139,8 @@
   overflow: hidden;
   box-sizing: border-box;
   pointer-events: all;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .calendar-event-title {

@@ -87,6 +87,8 @@
   flex: 1;
   border-bottom: 1px solid var(--border-color);
   margin-left: 0.75%;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .time-label {
@@ -103,6 +105,8 @@
 .event-area {
   height: 100%;
   width: 100%;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .event-area.even-hour {
@@ -135,6 +139,8 @@
   overflow: hidden;
   box-sizing: border-box;
   pointer-events: all;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .calendar-event-title {

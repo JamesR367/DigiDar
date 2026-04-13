@@ -15,7 +15,7 @@ import {
   buildEventData,
 } from "./EventModalUtils";
 
-function EventModal({ setOpenModal }: EventModalProps) {
+function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
   const selectedDate = useContext(dateContext)!;
   const [userList, setUserList] = useState<User[]>([]);
   const [eventTitle, setEventTitle] = useState<string>("");
@@ -92,6 +92,7 @@ function EventModal({ setOpenModal }: EventModalProps) {
     );
     try {
       await pushEvent(eventData);
+      await onEventSaved?.();
     } catch (err) {
       console.error("Failed to create event:", err);
     }

@@ -3,6 +3,9 @@ import "./day.css";
 import Cancel from "../../assets/cancel.svg?react";
 import EventModal from "../EventModal/EventModal";
 import { dateContext, type CalendarEvent } from "../../utils/Context";
+import HourSlotEventsModal from "../HourSlotEventsModal/HourSlotEventsModal";
+import EditEventModal from "../EditEventModal/EditEventModal";
+import { deleteEvent, patchEvent } from "../../utils/eventsApi";
 import {
   type DayViewProps,
   EVENT_LAYOUT,
@@ -17,15 +20,54 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
   const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
   const [modalOpen, setModalOpen] = useState(false);
   const [eventList, setEventList] = useState<CalendarEvent[]>([]);
+  const [slotModalOpen, setSlotModalOpen] = useState(false);
+  const [slotStart, setSlotStart] = useState<Date | null>(null);
+  const [slotEnd, setSlotEnd] = useState<Date | null>(null);
+  const [slotEvents, setSlotEvents] = useState<CalendarEvent[]>([]);
+  const [slotAllDayEvents, setSlotAllDayEvents] = useState<CalendarEvent[]>([]);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [eventToEdit, setEventToEdit] = useState<CalendarEvent | null>(null);
+  const [slotInitialSelectedId, setSlotInitialSelectedId] = useState<number | null>(null);
+
+  const reloadEvents = async () => {
+    const events = await fetchDayEvents(selectedDate.toISODate()!);
+    setEventList(events);
+    setSelectedEvents(events);
+    return events;
+  };
 
   useEffect(() => {
-    fetchDayEvents(selectedDate.toISODate()!)
-      .then((events) => {
-        setEventList(events);
-        setSelectedEvents(events);
-      })
-      .catch((err) => console.error("Failed to fetch events:", err));
-  });
+    reloadEvents().catch((err) => console.error("Failed to fetch events:", err));
+  }, [selectedDate]);
+
+  const openSlotModalForHour = (hour: number) => {
+    const start = selectedDate.set({ hour, minute: 0, second: 0, millisecond: 0 });
+    const end = start.plus({ hours: 1 });
+    const slotStartDate = start.toJSDate();
+    const slotEndDate = end.toJSDate();
+
+    const overlaps = eventList.filter((ev) => {
+      if (ev.all_day) return false;
+      const evStart = new Date(ev.start_datetime).getTime();
+      const evEnd = new Date(ev.end_datetime).getTime();
+      return evStart < slotEndDate.getTime() && evEnd > slotStartDate.getTime();
+    });
+
+    const allDay = eventList.filter((ev) => ev.all_day);
+
+    setSlotStart(slotStartDate);
+    setSlotEnd(slotEndDate);
+    setSlotEvents(overlaps);
+    setSlotAllDayEvents(allDay);
+    setSlotInitialSelectedId(null);
+    setSlotModalOpen(true);
+  };
+
+  const openSlotModalForEvent = (ev: CalendarEvent) => {
+    const start = new Date(ev.start_datetime);
+    setSlotInitialSelectedId(ev.id);
+    openSlotModalForHour(start.getHours());
+  };
 
   const renderHalfDay = (hours: number[]) => {
     const firstHour = hours[0];
@@ -58,7 +100,16 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
           {hours.map((hour) => {
             const label = selectedDate.set({ hour, minute: 0 });
             return (
-              <div key={hour} className="hour-slot">
+              <div
+                key={hour}
+                className="hour-slot"
+                role="button"
+                tabIndex={0}
+                onClick={() => openSlotModalForHour(hour)}
+                onPointerDown={(e) => {
+                  if (e.pointerType === "pen") openSlotModalForHour(hour);
+                }}
+              >
                 <span className="time-label">{label.toFormat("h a")}</span>
                 <div
                   className={`event-area ${hour % 2 === 0 ? "even-hour" : "odd-hour"}`}
@@ -98,6 +149,12 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
                   width: `${colWidth - INSET_PCT * 2 - 0.3}%`,
                   borderLeftColor: event.color,
                 }}
+                role="button"
+                tabIndex={0}
+                onClick={() => openSlotModalForEvent(event)}
+                onPointerDown={(e) => {
+                  if (e.pointerType === "pen") openSlotModalForEvent(event);
+                }}
               >
                 <span className="calendar-event-title">{event.title}</span>
                 <span className="calendar-event-time">
@@ -115,7 +172,53 @@ function DayView({ setView, setSelectedEvents }: DayViewProps) {
 
   return (
     <div>
-      {modalOpen && <EventModal setOpenModal={setModalOpen} />}
+      {modalOpen && (
+        <EventModal
+          setOpenModal={setModalOpen}
+          onEventSaved={() => reloadEvents()}
+        />
+      )}
+      {slotModalOpen && slotStart && slotEnd && (
+        <HourSlotEventsModal
+          slotLabel={`${selectedDate.weekdayLong}, ${selectedDate.monthLong} ${selectedDate.day}, ${selectedDate.year}`}
+          slotStart={slotStart}
+          slotEnd={slotEnd}
+          events={slotEvents}
+          allDayEvents={slotAllDayEvents}
+          initialSelectedEventId={slotInitialSelectedId}
+          onClose={() => setSlotModalOpen(false)}
+          onRequestEdit={(ev) => {
+            setSlotModalOpen(false);
+            setEventToEdit(ev);
+            setEditModalOpen(true);
+          }}
+          onRequestDelete={async (ev) => {
+            await deleteEvent(ev.id);
+            const refreshed = await reloadEvents();
+            const startMs = slotStart.getTime();
+            const endMs = slotEnd.getTime();
+            const nextOverlaps = refreshed
+              .filter((e) => {
+                if (e.all_day) return false;
+                const es = new Date(e.start_datetime).getTime();
+                const ee = new Date(e.end_datetime).getTime();
+                return es < endMs && ee > startMs;
+              });
+            setSlotEvents(nextOverlaps);
+            setSlotAllDayEvents(refreshed.filter((e) => e.all_day));
+          }}
+        />
+      )}
+      {editModalOpen && eventToEdit && (
+        <EditEventModal
+          event={eventToEdit}
+          setOpenModal={setEditModalOpen}
+          onSave={async (updates) => {
+            await patchEvent(eventToEdit.id, updates);
+            await reloadEvents();
+          }}
+        />
+      )}
       <div className="day-view-container">
         <div className="day-header">
           <h3>{`${selectedDate.weekdayLong}, ${selectedDate.monthLong} ${selectedDate.day}, ${selectedDate.year}`}</h3>

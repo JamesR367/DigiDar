@@ -15,6 +15,7 @@ interface Event {
 
 export interface EventModalProps {
   setOpenModal: (OpenModal: boolean) => void;
+  onEventSaved?: () => void | Promise<void>;
 }
 
 export async function fetchUsers(): Promise<User[]> {

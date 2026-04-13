@@ -3,8 +3,21 @@ import { DateTime } from "luxon";
 import "./TopBar.css";
 import CalendarSettings from "../Settings/Settings.tsx";
 import Cog from "../../assets/cog.svg?react";
-import type { WeatherData, WeatherError, TopBarProps } from "./topBarUtils.ts";
-import { fetchWeatherData, formatTime, formatDate } from "./topBarUtils.ts";
+import type { CalendarEvent } from "../../utils/Context";
+import type {
+  WeatherData,
+  WeatherError,
+  TopBarProps,
+  EventsError,
+} from "./topBarUtils.ts";
+import {
+  fetchWeatherData,
+  formatTime,
+  formatDate,
+  fetchAllEvents,
+  getNextUpcomingEvents,
+  formatUpcomingEventWhen,
+} from "./topBarUtils.ts";
 
 export default function TopBar({
   timeFormat = "12h",
@@ -16,6 +29,10 @@ export default function TopBar({
   );
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [events, setEvents] = useState<CalendarEvent[] | EventsError | null>(
+    null,
+  );
+  const [eventsLoading, setEventsLoading] = useState(true);
 
   useEffect(() => {
     const updateTime = () => setCurrentTime(DateTime.local());
@@ -44,6 +61,24 @@ export default function TopBar({
     const weatherInterval = setInterval(loadWeather, 900_000);
     return () => clearInterval(weatherInterval);
   }, [location]);
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      setEventsLoading(true);
+      const result = await fetchAllEvents();
+      setEvents(result);
+      setEventsLoading(false);
+    };
+
+    loadEvents();
+    const eventsInterval = setInterval(loadEvents, 300_000);
+    return () => clearInterval(eventsInterval);
+  }, []);
+
+  const upcoming =
+    events && Array.isArray(events)
+      ? getNextUpcomingEvents(events, DateTime.local(), 3)
+      : [];
 
   return (
     <div className="top-bar">
@@ -77,8 +112,36 @@ export default function TopBar({
         )}
       </div>
       <div className="top-bar-right">
-        <div className="events-placeholder">
-          <span>No upcoming events</span>
+        <div className="events-widget">
+          {eventsLoading ? (
+            <div className="events-loading">Loading events...</div>
+          ) : events && !Array.isArray(events) ? (
+            <div className="events-error">{events.message}</div>
+          ) : upcoming.length === 0 ? (
+            <div className="events-empty">No upcoming events</div>
+          ) : (
+            <div className="events-list" aria-label="Upcoming events">
+              {upcoming.map((event) => (
+                <div key={event.id} className="events-item">
+                  <div
+                    className="events-color"
+                    style={{ backgroundColor: event.color }}
+                    aria-hidden="true"
+                  />
+                  <div className="events-text">
+                    <div className="events-title" title={event.title}>
+                      {event.title}
+                    </div>
+                    <div className="events-when">
+                      {event.all_day
+                        ? "All day"
+                        : formatUpcomingEventWhen(event.start_datetime)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <Cog className="settings-button" onClick={() => setModalOpen(true)} />
       </div>

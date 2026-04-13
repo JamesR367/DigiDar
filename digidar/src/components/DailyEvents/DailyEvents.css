@@ -1,9 +1,11 @@
-.main-container{
+.main-container {
   background-color: var(--background-color);
-  border: solid var(--border-color), 1px;
+  border:
+    solid var(--border-color),
+    1px;
   border-radius: 8px;
-  width: 20vw; 
-  height: 85vh; 
+  width: 20vw;
+  height: 85vh;
   color: var(--primary-color);
   display: flex;
   flex-direction: column;
@@ -11,13 +13,13 @@
   overflow-y: auto;
 }
 
-.daily-event-container{
+.daily-event-container {
   background-color: transparent;
   border: solid var(--border-color) 1px;
   color: var(--primary-color);
   width: 60%;
   height: 80%;
-  min-height: 25px;
+  max-height: 25px;
   margin-top: 15%;
   border-radius: 8px;
   display: flex;
@@ -25,19 +27,21 @@
   align-items: center;
 }
 
-.daily-event-container p{
+.daily-event-container p {
   margin-left: 10%;
 }
 
-.user-color{
+.user-color {
   width: 15%;
   height: 100%;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
 }
 
-.divider{
+.divider {
   height: 100%;
   width: 0;
-  border: solid var(--border-color), 1px;
+  border:
+    solid var(--border-color),
+    1px;
 }

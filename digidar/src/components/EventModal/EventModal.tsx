@@ -22,7 +22,6 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
   const [startTime, setStartTime] = useState({ hour: "00", minute: "00" });
   const [endTime, setEndTime] = useState({ hour: "00", minute: "00" });
-  const [handwritingOpen, setHandwritingOpen] = useState(false);
   const [handwritingHasInk, setHandwritingHasInk] = useState(false);
   const [ocrBusy, setOcrBusy] = useState(false);
   const [ocrError, setOcrError] = useState<string | null>(null);
@@ -34,6 +33,10 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
     username: "",
     color: "",
   });
+  const timePickerClasses = {
+    popoverContent: "event-time-popover-content",
+    popoverColumns: "event-time-popover-columns",
+  };
 
   useEffect(() => {
     fetchUsers()
@@ -107,54 +110,23 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
           <Cancel className="back-button" onClick={() => setOpenModal(false)} />
         </div>
         <div className="body">
-          <div className="time-pickers">
-            <div className={`time-picker-group ${isAllDay ? "disabled" : ""}`}>
-              <label>Start Time</label>
-              <TimePicker
-                value={startTime}
-                onChange={setStartTime}
-                minuteStep={1}
-                disabled={isAllDay}
-              />
-            </div>
-            <div className={`time-picker-group ${isAllDay ? "disabled" : ""}`}>
-              <label>End Time</label>
-              <TimePicker
-                value={endTime}
-                onChange={setEndTime}
-                minuteStep={1}
-                disabled={isAllDay}
-              />
-            </div>
-            <div className="all-day-checkbox">
-              <label>All Day</label>
-              <input
-                type="checkbox"
-                checked={isAllDay}
-                onChange={(e) => setIsAllDay(e.target.checked)}
-              />
-            </div>
+          <div className="left-panel">
             <div className="input-group">
-              <label>Handwritten input</label>
-              <button
-                type="button"
-                onClick={() => setHandwritingOpen((v) => !v)}
-                className="create-button"
-                style={{ width: "100%", height: "48px" }}
-              >
-                {handwritingOpen ? "Hide handwriting" : "Write it instead"}
-              </button>
+              <label>Event Title</label>
+              <input
+                type="text"
+                placeholder="Enter event title"
+                value={eventTitle}
+                maxLength={50}
+                onChange={(e) => setEventTitle(e.target.value)}
+              />
             </div>
-          </div>
-          <div className="right-panel">
             <div className="input-group">
               <label>Assign User</label>
               <select
                 value={selectedUser.username}
                 onChange={(e) => {
-                  const user = userList.find(
-                    (u) => u.username === e.target.value,
-                  );
+                  const user = userList.find((u) => u.username === e.target.value);
                   if (user) setSelectedUser(user);
                 }}
               >
@@ -168,59 +140,65 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
                 ))}
               </select>
             </div>
-            <div className="input-group">
-              <label>Event Title</label>
-              <input
-                type="text"
-                placeholder="Enter event title"
-                value={eventTitle}
-                maxLength={50}
-                onChange={(e) => setEventTitle(e.target.value)}
-              />
-            </div>
-            {handwritingOpen && (
-              <div className="input-group">
-                <label>Handwriting</label>
-                <HandWritingCanvas
-                  ref={canvasRef}
-                  onHasInkChange={setHandwritingHasInk}
-                  disabled={ocrBusy}
+            <div className="time-pickers">
+              <div className={`time-picker-group ${isAllDay ? "disabled" : ""}`}>
+                <label>Start Time</label>
+                <TimePicker
+                  value={startTime}
+                  onChange={setStartTime}
+                  minuteStep={1}
+                  disabled={isAllDay}
+                  classes={timePickerClasses}
                 />
-                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-                  <button
-                    type="button"
-                    className="create-button"
-                    style={{ width: "100%", height: "48px" }}
-                    onClick={handleRecognize}
-                    disabled={ocrBusy || !handwritingHasInk}
-                  >
-                    {ocrBusy ? "Recognizing..." : "Recognize"}
-                  </button>
-                </div>
-                {ocrError && (
-                  <div style={{ marginTop: 8, color: "#b00020", fontSize: 12 }}>
-                    {ocrError}
-                  </div>
-                )}
-                {ocrRawText && (
-                  <div style={{ marginTop: 8, fontSize: 12, opacity: 0.9 }}>
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>
-                      Detected text
-                    </div>
-                    <div
-                      style={{
-                        whiteSpace: "pre-wrap",
-                        border: "1px solid rgba(0,0,0,0.15)",
-                        borderRadius: 8,
-                        padding: 10,
-                      }}
-                    >
-                      {ocrRawText}
-                    </div>
-                  </div>
-                )}
               </div>
-            )}
+              <div className={`time-picker-group ${isAllDay ? "disabled" : ""}`}>
+                <label>End Time</label>
+                <TimePicker
+                  value={endTime}
+                  onChange={setEndTime}
+                  minuteStep={1}
+                  disabled={isAllDay}
+                  classes={timePickerClasses}
+                />
+              </div>
+              <div className="all-day-checkbox">
+                <label>All Day</label>
+                <input
+                  type="checkbox"
+                  checked={isAllDay}
+                  onChange={(e) => setIsAllDay(e.target.checked)}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="right-panel">
+            <div className="input-group">
+              <label>Handwriting</label>
+              <HandWritingCanvas
+                ref={canvasRef}
+                width={460}
+                height={210}
+                onHasInkChange={setHandwritingHasInk}
+                disabled={ocrBusy}
+              />
+              <div className="ocr-actions">
+                <button
+                  type="button"
+                  className="create-button full-width-button"
+                  onClick={handleRecognize}
+                  disabled={ocrBusy || !handwritingHasInk}
+                >
+                  {ocrBusy ? "Recognizing..." : "Recognize"}
+                </button>
+              </div>
+              {ocrError && <div className="ocr-error">{ocrError}</div>}
+              {ocrRawText && (
+                <div className="ocr-preview">
+                  <div className="ocr-preview-title">Detected text</div>
+                  <div className="ocr-preview-body">{ocrRawText}</div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="footer">

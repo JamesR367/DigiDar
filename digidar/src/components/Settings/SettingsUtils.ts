@@ -1,4 +1,5 @@
 export interface User {
+  id: number;
   username: string;
   color: string;
 }
@@ -52,4 +53,24 @@ export async function pushUser(userData: User): Promise<void> {
   }
   const result = await response.json();
   console.log("User created:", result);
+}
+
+export async function fetchUsers(): Promise<User[]> {
+  const response = await fetch("http://localhost:8001/users/");
+  if (!response.ok) {
+    throw new Error('Failed to fetch users: ${response.status}');
+  }
+  return await response.json();
+}
+
+export async function deleteUser(userId: number): Promise<void> {
+  const response = await fetch(`http://localhost:8001/users/${userId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete user: ${response.status}`);
+  }
+  
+  console.log(`User ${userId} deleted successfully`);
 }

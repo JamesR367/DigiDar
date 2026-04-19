@@ -64,3 +64,83 @@
   background-color: rgba(var(--primary-rgb), 0.1);
   border-color: rgba(var(--primary-rgb), 0.6);
 }
+
+
+
+/* Container for the user management list */
+.user-management-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 200px; /* Limits height and allows scrolling if you have many users */
+  overflow-y: auto;
+}
+
+.section-label {
+  font-weight: bolder;
+  margin-bottom: 2px;
+  font-size: 14px;
+}
+
+/* Individual User Row */
+.user-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: rgba(var(--primary-rgb), 0.03);
+  border: 1px solid rgba(var(--primary-rgb), 0.15);
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.user-item:hover {
+  background-color: rgba(var(--primary-rgb), 0.06);
+}
+
+/* User Info (Left side of the row) */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-color-preview {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-name-text {
+  font-size: 14px;
+  color: var(--primary-color);
+}
+
+/* Delete Button (Right side of the row) */
+.delete-user-btn {
+  background-color: transparent;
+  color: rgba(var(--primary-rgb), 0.6);
+  border: 1px solid transparent;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-user-btn:hover {
+  color: #ff4d4d; /* Subtle red for danger */
+  background-color: rgba(255, 77, 77, 0.1);
+  border-color: rgba(255, 77, 77, 0.2);
+}
+
+/* Custom scrollbar for the user list to match the theme */
+.user-management-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.user-management-container::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--primary-rgb), 0.2);
+  border-radius: 10px;
+}

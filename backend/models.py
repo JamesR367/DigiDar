@@ -18,7 +18,7 @@ class Event(Base):
     end_datetime = Column(DateTime, nullable=False)
     all_day = Column(Boolean, default=False)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    user_color = Column(String(50), ForeignKey('users.color', ondelete='CASCADE'), nullable=False)
+    user_color = Column(String(50), nullable=False)
 
 class EventRecurrence(Base):
     __tablename__ = 'event_recurrence'

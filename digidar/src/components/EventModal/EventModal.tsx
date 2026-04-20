@@ -8,12 +8,7 @@ import type { HandwritingCanvasHandle } from "../HandWritingCanvas/HandWritingCa
 import { parseHandwrittenEventImage } from "../../utils/ocrNlpClient";
 import type { User } from "../../utils/types";
 
-import {
-  type EventModalProps,
-  fetchUsers,
-  pushEvent,
-  buildEventData,
-} from "./EventModalUtils";
+import { type EventModalProps, fetchUsers, pushEvent, buildEventData, type RecurrenceFrequency, pushRecurringEvents } from "./EventModalUtils";
 
 function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
   const selectedDate = useContext(dateContext)!;
@@ -28,11 +23,12 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
   const [ocrRawText, setOcrRawText] = useState<string>("");
   const canvasRef = useRef<HandwritingCanvasHandle | null>(null);
   const ocrAbortRef = useRef<AbortController | null>(null);
-  const [selectedUser, setSelectedUser] = useState<User>({
-    id: 0,
-    username: "",
-    color: "",
-  });
+  const [selectedUser, setSelectedUser] = useState<User>({ id: 0, username: "", color: "" });
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [frequency, setFrequency] = useState<RecurrenceFrequency>("weekly");
+  const [recurrenceInterval, setRecurrenceInterval] = useState(1);
+  const [count, setCount] = useState(4);
+
   const timePickerClasses = {
     popoverContent: "event-time-popover-content",
     popoverColumns: "event-time-popover-columns",
@@ -67,14 +63,11 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
       const blob = await canvasRef.current.exportPngBlob();
       const parsed = await parseHandwrittenEventImage(blob, ac.signal);
       setOcrRawText(parsed.rawText || "");
-
       if (parsed.title) setEventTitle(parsed.title);
       if (parsed.startTime) setStartTime(parsed.startTime);
       if (parsed.endTime) setEndTime(parsed.endTime);
     } catch (e) {
-      setOcrError(
-        e instanceof Error ? e.message : "Failed to recognize handwriting.",
-      );
+      setOcrError(e instanceof Error ? e.message : "Failed to recognize handwriting.");
     } finally {
       setOcrBusy(false);
     }
@@ -85,16 +78,13 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
       alert("Please select a user before creating an event.");
       return;
     }
-    const eventData = buildEventData(
-      selectedDate.toISODate()!,
-      eventTitle,
-      startTime,
-      endTime,
-      isAllDay,
-      selectedUser,
-    );
+    const eventData = buildEventData(selectedDate.toISODate()!, eventTitle, startTime, endTime, isAllDay, selectedUser);
     try {
-      await pushEvent(eventData);
+      if (isRecurring) {
+        await pushRecurringEvents(eventData, frequency, recurrenceInterval, count);
+      } else {
+        await pushEvent(eventData);
+      }
       await onEventSaved?.();
     } catch (err) {
       console.error("Failed to create event:", err);
@@ -113,13 +103,7 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
           <div className="left-panel">
             <div className="input-group">
               <label>Event Title</label>
-              <input
-                type="text"
-                placeholder="Enter event title"
-                value={eventTitle}
-                maxLength={50}
-                onChange={(e) => setEventTitle(e.target.value)}
-              />
+              <input type="text" placeholder="Enter event title" value={eventTitle} maxLength={50} onChange={(e) => setEventTitle(e.target.value)} />
             </div>
             <div className="input-group">
               <label>Assign User</label>
@@ -143,51 +127,50 @@ function EventModal({ setOpenModal, onEventSaved }: EventModalProps) {
             <div className="time-pickers">
               <div className={`time-picker-group ${isAllDay ? "disabled" : ""}`}>
                 <label>Start Time</label>
-                <TimePicker
-                  value={startTime}
-                  onChange={setStartTime}
-                  minuteStep={1}
-                  disabled={isAllDay}
-                  classes={timePickerClasses}
-                />
+                <TimePicker value={startTime} onChange={setStartTime} minuteStep={1} disabled={isAllDay} classes={timePickerClasses} />
               </div>
               <div className={`time-picker-group ${isAllDay ? "disabled" : ""}`}>
                 <label>End Time</label>
-                <TimePicker
-                  value={endTime}
-                  onChange={setEndTime}
-                  minuteStep={1}
-                  disabled={isAllDay}
-                  classes={timePickerClasses}
-                />
+                <TimePicker value={endTime} onChange={setEndTime} minuteStep={1} disabled={isAllDay} classes={timePickerClasses} />
               </div>
               <div className="all-day-checkbox">
                 <label>All Day</label>
-                <input
-                  type="checkbox"
-                  checked={isAllDay}
-                  onChange={(e) => setIsAllDay(e.target.checked)}
-                />
+                <input type="checkbox" checked={isAllDay} onChange={(e) => setIsAllDay(e.target.checked)} />
+              </div>
+              <div className="recurring-checkbox">
+                <label>Recurring</label>
+                <input type="checkbox" checked={isRecurring} onChange={(e) => setIsRecurring(e.target.checked)} />
               </div>
             </div>
+
+            {isRecurring && (
+              <div className="recurrence-group">
+                <div className="input-group">
+                  <label>Frequency</label>
+                  <select value={frequency} onChange={(e) => setFrequency(e.target.value as RecurrenceFrequency)}>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                  </select>
+                </div>
+                <div className="input-group">
+                  <label>Repeat every</label>
+                  <input type="number" min={1} value={recurrenceInterval} onChange={(e) => setRecurrenceInterval(Number(e.target.value))} />
+                </div>
+                <div className="input-group">
+                  <label>Number of occurrences</label>
+                  <input type="number" min={1} value={count} onChange={(e) => setCount(Number(e.target.value))} />
+                </div>
+              </div>
+            )}
           </div>
           <div className="right-panel">
             <div className="input-group">
               <label>Handwriting</label>
-              <HandWritingCanvas
-                ref={canvasRef}
-                width={460}
-                height={210}
-                onHasInkChange={setHandwritingHasInk}
-                disabled={ocrBusy}
-              />
+              <HandWritingCanvas ref={canvasRef} width={460} height={210} onHasInkChange={setHandwritingHasInk} disabled={ocrBusy} />
               <div className="ocr-actions">
-                <button
-                  type="button"
-                  className="create-button full-width-button"
-                  onClick={handleRecognize}
-                  disabled={ocrBusy || !handwritingHasInk}
-                >
+                <button type="button" className="create-button full-width-button" onClick={handleRecognize} disabled={ocrBusy || !handwritingHasInk}>
                   {ocrBusy ? "Recognizing..." : "Recognize"}
                 </button>
               </div>

@@ -5,7 +5,7 @@ import models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-from datetime import datetime 
+from datetime import datetime, timedelta
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -44,14 +44,6 @@ class EventUpdate(BaseModel):
     end_datetime: datetime | None = None
     all_day: bool | None = None
     user_id: int | None = None
-
-class EventRecurrenceBase(BaseModel):
-    event_id: int
-    frequency: str
-    event_interval: int = 1
-    days_of_week: list[int] | None = None
-    end_date: str | None = None
-    count: int | None = None
 
 def get_db():
     db = SessionLocal()
@@ -134,7 +126,6 @@ async def update_event(event_id: int, event: EventUpdate, db: db_dependency):
         db_event.user_id = user.id
         db_event.user_color = user.color
     else:
-        # Keep user_color consistent with the event's selected user.
         user = db.query(models.User).filter(models.User.id == db_event.user_id).first()
         db_event.user_color = user.color if user else db_event.user_color
 
@@ -161,3 +152,12 @@ async def delete_event(event_id: int, db: db_dependency):
     db.delete(db_event)
     db.commit()
     return None
+
+
+
+@app.post("/events/bulk/", status_code=status.HTTP_201_CREATED)
+async def create_events_bulk(events: list[EventBase], db: db_dependency):
+    db_events = [models.Event(**e.model_dump()) for e in events]
+    db.add_all(db_events)
+    db.commit()
+    return {"created": len(db_events)}

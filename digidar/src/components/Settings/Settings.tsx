@@ -25,6 +25,7 @@ function CalendarSettings({ setOpenModal }: SettingModalProps) {
   const [selectedColor, setSelectedColor] = useState(COLOR_OPTIONS[0].hex);
 
   const [users, setUsers] = useState<User[]>([]);
+  const [userToDelete, setUserToDelete] = useState<string>("");
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -116,31 +117,36 @@ function CalendarSettings({ setOpenModal }: SettingModalProps) {
           </div>
         </div>
         <div className="user-management-container">
-            <p className="section-label">Current Users</p>
-            <div className="user-list">
-              {users.length === 0 ? (
-                <p className="empty-msg">No users found.</p>
-              ) : (
-                users.map((user) => (
-                  <div key={user.id} className="user-item">
-                    <div className="user-info">
-                      <span 
-                        className="user-color-preview" 
-                        style={{ backgroundColor: user.color }}
-                      ></span>
-                      <span className="user-name-text">{user.username}</span>
-                    </div>
-                    <button 
-                      className="delete-user-btn"
-                      onClick={() => handleDeleteUser(user.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))
-              )}
+          <p className="remove-user-label">Remove User</p>
+          <div className="delete-user-input-row">
+            <select
+              className="delete-user-selection"
+              value={userToDelete}
+              onChange={(e) => setUserToDelete(e.target.value)}
+            >
+              <option value="" disabled>Select a user to remove</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.username}
+                </option>
+              ))}
+            </select>
+            <div className="delete-spacer-box">
             </div>
           </div>
+          <button 
+            className="delete-action-button" 
+            onClick={() => {
+              if(userToDelete) {
+                handleDeleteUser(Number(userToDelete));
+                setUserToDelete(""); // Reset after delete
+              }
+            }}
+            disabled={!userToDelete}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -242,3 +242,54 @@
     width: 100%;
   }
 }
+
+.input-group select,
+.input-group input[type="text"],
+.input-group input[type="number"],
+.input-group input[type="date"] {
+  font-size: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--primary-color);
+  background-color: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  outline: none;
+}
+
+.input-group input[type="number"] {
+  width: 80px;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(var(--calendar-icon-invert, 0));
+  cursor: pointer;
+}
+
+.recurring-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.recurring-checkbox label {
+  font-size: 90%;
+  font-weight: bold;
+}
+
+.recurring-checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.recurring-checkbox input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+}

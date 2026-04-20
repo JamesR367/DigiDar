@@ -5,9 +5,11 @@
   gap: 10px;
 }
 
-.add-user-label {
+.add-user-label,
+.remove-user-label {
   font-weight: bolder;
   margin-bottom: 2px;
+  display: block;
 }
 
 .add-user-input-row {
@@ -64,3 +66,70 @@
   background-color: rgba(var(--primary-rgb), 0.1);
   border-color: rgba(var(--primary-rgb), 0.6);
 }
+
+
+.settings-section-wrapper {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.user-management-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.delete-user-input-row {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(var(--primary-rgb), 0.25);
+}
+
+.delete-user-selection {
+  flex: 1;
+  padding: 8px 12px;
+  width: fit-content;
+  background-color: rgba(var(--primary-rgb), 0.05);
+  color: var(--primary-color);
+  border: none;
+  outline: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.delete-user-selection option {
+  background-color: var(--background-color);
+  color: var(--primary-color);
+}
+
+.delete-action-button {
+  align-self: flex-end;
+  padding: 7px 22px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 77, 77, 0.3); /* Red tint for delete */
+  background-color: transparent;
+  color: #ff4d4d;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-action-button:hover:not(:disabled) {
+  background-color: rgba(255, 77, 77, 0.1);
+  border-color: #ff4d4d;
+}
+
+.delete-action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: rgba(var(--primary-rgb), 0.1);
+  color: rgba(var(--primary-rgb), 0.4);
+}
+

@@ -5,9 +5,11 @@
   gap: 10px;
 }
 
-.add-user-label {
+.add-user-label,
+.remove-user-label {
   font-weight: bolder;
   margin-bottom: 2px;
+  display: block;
 }
 
 .add-user-input-row {
@@ -66,6 +68,13 @@
 }
 
 
+.settings-section-wrapper {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 
 .user-management-container {
   display: flex;
@@ -75,6 +84,7 @@
 }
 
 .delete-user-input-row {
+  width: 100%;
   display: flex;
   align-items: stretch;
   border-radius: 8px;
@@ -85,18 +95,13 @@
 .delete-user-selection {
   flex: 1;
   padding: 8px 12px;
+  width: fit-content;
   background-color: rgba(var(--primary-rgb), 0.05);
   color: var(--primary-color);
   border: none;
   outline: none;
   font-size: 14px;
   cursor: pointer;
-}
-
-.delete-spacer-box {
-  width: 80%;
-  background-color: rgba(var(--primary-rgb), 0.08);
-  border-left: 3px solid rgba(var(--primary-rgb), 0.2);
 }
 
 .delete-user-selection option {
@@ -128,7 +133,3 @@
   color: rgba(var(--primary-rgb), 0.4);
 }
 
-.remove-user-label{
-  font-weight: bolder;
-  margin-bottom: 2px;
-}

@@ -25,7 +25,7 @@ function CalendarSettings({ setOpenModal }: SettingModalProps) {
   const [selectedColor, setSelectedColor] = useState(COLOR_OPTIONS[0].hex);
 
   const [users, setUsers] = useState<User[]>([]);
-  const [userToDelete, setUserToDelete] = useState<string>("");
+  const [userToDelete, setUserToDelete] = useState<User|null>(null);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -88,64 +88,67 @@ function CalendarSettings({ setOpenModal }: SettingModalProps) {
               onChange={handleColorChange}
             />
           </div>
-          <div className="add-user-container">
-            <p className="add-user-label">Add Users</p>
-            <div className="add-user-input-row">
-              <input
-                className="add-user-name-input"
-                type="text"
-                placeholder="Username"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-              <select
-                className="user-color-selection"
-                value={selectedColor}
-                onChange={(e) => setSelectedColor(e.target.value)}
-                style={{ borderLeft: `3px solid ${selectedColor}` }}
+          <div className="settings-section-wrapper">
+            <div className="add-user-container">
+              <p className="add-user-label">Add Users</p>
+              <div className="add-user-input-row">
+                <input
+                  className="add-user-name-input"
+                  type="text"
+                  placeholder="Username"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+                <select
+                  className="user-color-selection"
+                  value={selectedColor}
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  style={{ borderLeft: `3px solid ${selectedColor}` }}
+                >
+                  {COLOR_OPTIONS.map(({ label, hex }) => (
+                    <option key={hex} value={hex} style={{ color: hex }}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button className="add-user-button" onClick={handleAddUser}>
+                Add
+              </button>
+            </div>
+            <div className="user-management-container">
+              <p className="remove-user-label">Remove User</p>
+              <div className="delete-user-input-row">
+                <select
+                  className="delete-user-selection"
+                  value={userToDelete?.username ?? ""}
+                  onChange={(e) => {const targetedUser = users.find((s) => s.username == (e.target as HTMLSelectElement).value)
+                    setUserToDelete(targetedUser!)
+                  }
+                  }
+                >
+                  <option value="" disabled>Select a user to remove</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.username}>
+                      {user.username}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button 
+                className="delete-action-button" 
+                onClick={() => {
+                  if(userToDelete) {
+                    handleDeleteUser(userToDelete.id);
+                    setUserToDelete(null); // Reset after delete
+                  }
+                }}
+                disabled={!userToDelete}
               >
-                {COLOR_OPTIONS.map(({ label, hex }) => (
-                  <option key={hex} value={hex} style={{ color: hex }}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button className="add-user-button" onClick={handleAddUser}>
-              Add
-            </button>
-          </div>
-        </div>
-        <div className="user-management-container">
-          <p className="remove-user-label">Remove User</p>
-          <div className="delete-user-input-row">
-            <select
-              className="delete-user-selection"
-              value={userToDelete}
-              onChange={(e) => setUserToDelete(e.target.value)}
-            >
-              <option value="" disabled>Select a user to remove</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.username}
-                </option>
-              ))}
-            </select>
-            <div className="delete-spacer-box">
+                Delete
+              </button>
             </div>
           </div>
-          <button 
-            className="delete-action-button" 
-            onClick={() => {
-              if(userToDelete) {
-                handleDeleteUser(Number(userToDelete));
-                setUserToDelete(""); // Reset after delete
-              }
-            }}
-            disabled={!userToDelete}
-          >
-            Delete
-          </button>
         </div>
       </div>
     </div>

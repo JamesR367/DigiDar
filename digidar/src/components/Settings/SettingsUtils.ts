@@ -64,15 +64,6 @@ export async function fetchUsers(): Promise<User[]> {
 }
 
 export async function deleteUser(userId: number): Promise<void> {  
-  const eventsResponse = await fetch(`http://localhost:8001/events?userId=${userId}`);
-  const events = await eventsResponse.json();
-
-  const deleteEventPromises = events.map((event: any) =>
-    fetch(`http://localhost:8001/events/${event.id}`, {
-      method: "DELETE",
-    })
-  );
-  await Promise.all(deleteEventPromises);
 
   const response = await fetch(`http://localhost:8001/users/${userId}`, {
     method: "DELETE",
